@@ -32,3 +32,4 @@ SET(SRC src/image_io.cc
 
 add_executable(render ${SRC})
 target_link_libraries(render ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} ${GLM_LIBRARY})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_PATH}/../)
