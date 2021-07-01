@@ -32,10 +32,12 @@ include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} $(GLEW_INCLUDE_D
 
 SET(SRC src/image_io.cc
 	src/image.cc
+    src/obj_loader.cc
 	src/main.cc)
 
 # Binary file
 add_executable(render ${SRC})
+set_property(TARGET render PROPERTY CXX_STANDARD 20)
 target_link_libraries(render ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} ${GLM_LIBRARY})
 
 # Copy binary to parent folder
