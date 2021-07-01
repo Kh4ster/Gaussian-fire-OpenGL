@@ -1,84 +1,68 @@
 #pragma once
 
-#include "vector.hh"
-
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 
 namespace scene
 {
 struct Camera final
 {
-    Camera(const space::Vector3& origin,
-           const space::Vector3& y_axis,
-           const space::Vector3& z_axis,
+    Camera(const glm::vec3& origin,
+           const glm::vec3& target,
+           const glm::vec3& up,
            const float z_min,
            const float z_max,
            const float alpha,
            const int width,
-           const int height);
+           const int height)
+        : origin_(origin)
+        , target_(target)
+        , up_(up)
+        , z_min_(z_min)
+        , z_max_(z_max)
+        , alpha_(alpha)
+        , width_(width)
+        , height_(height)
+    {}
 
     Camera(const Camera&) = default;
     Camera& operator=(const Camera&) = default;
 
     ~Camera() = default;
 
-	using Mat4 = space::Vector<16, float>;
-
-    Mat4 get_projection_matrix() const
+    glm::mat4 get_projection_matrix() const
     {
-		const float total  = z_min_ + z_max_;
-    	const float distance = z_max_ - z_min_;
-    	const float ratio   = static_cast<float>(width) / height;
-    	const float fov   = 1.0f / std::tan(deg_to_rad(alpha_) / 2.0f);
-    
-		return Mat4( 
-		fov / ratio, 0.0f,  0.0f, 0.0f,
-		0.0f,  fov, 0.0f, 0.0f,
-		0.0f,  0.0f, -total / distance, -1.0 ,
-		0.0f,  0.0f, -2.0f * z_max_ * z_min_ / distance,  0.0f);
+		return glm::perspectiveFov(alpha_, width_, height_, z_min_, z_max_);
     }
 
-	Mat4 get_model_view_matrix()
-	{ 
-    	const Vector3 z = Vector3(origin_[0] - z_axis_[0], origin_[1] - z_axis_[1], origin_[2] - z_axis_[2]).nomalized();
-    	const Vector3 x = Cross( my, mz );
-    Normalize( mx );
-    my = Cross( mz, mx );
-
-    TMat44 v{
-        TVec4{ mx[0], my[0], mz[0], 0.0f },
-        TVec4{ mx[1], my[1], mz[1], 0.0f },
-        TVec4{ mx[2], my[2], mz[2], 0.0f },
-        TVec4{ Dot(mx, pos), Dot(my, pos), Dot(TVec3{-mz[0], -mz[1], -mz[2]}, pos), 1.0f }
+	glm::mat4 get_model_view_matrix() const
+	{
+    	glm::mat4 view;
+		view = glm::lookAt(origin_, 
+						   target_, 
+						   up_);
+		return view;
     };
 
-    return v;
-}
+    // Origin of the camera `C` in 3D world
+    glm::vec3 origin_;
 
-    // Origin of the camera `C`
-    space::Vector3 origin_;
-
-    // Three axis of the camera
-    // Unit vectors
-    space::Vector3 y_axis_;
-    space::Vector3 z_axis_;
+    // Up vector in 3D world
+    glm::vec3 up_;
+    // Target point of the camera in 3D world
+    glm::vec3 target_;
 
     // Focal distances
     float z_min_;
     float z_max_;
 
-    // Fov y in degree
+    // Field of view in degree
     float alpha_;
 
     // Image dimensions
-    int width;
-    int height;
-
-	constexpr float deg_to_rad(float degree)
-	{
-		return (degree * (pi / 180));
-	}
-	static constexpr float pi = 3.14159265359f;
+    float width_;
+    float height_;
 };
 
 } // namespace scene

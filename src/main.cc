@@ -3,12 +3,15 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 //#include <glt_transform.hh>
 
 #include "object_vbo.hh"
 #include "image.hh"
 #include "image_io.hh"
+#include "camera.hh"
 
 //#define SAVE_RENDER
 
@@ -49,15 +52,20 @@ void display() {
 #endif
   glutSwapBuffers();
 }
+constexpr int window_width = 1024;
+constexpr int window_height = 1024;
 
 void init_glut(int &argc, char *argv[]) {
+
+
+
   //glewExperimental = GL_TRUE;
   glutInit(&argc, argv);
   glutInitContextVersion(4,5);
   glutInitContextProfile(GLUT_CORE_PROFILE | GLUT_DEBUG);
   glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
-  glutInitWindowSize(1024, 1024);
-  glutInitWindowPosition ( 100, 100 );
+  glutInitWindowSize(window_width, window_height);
+  glutInitWindowPosition(100, 100);
   glutCreateWindow("Shader Programming");
   glutDisplayFunc(display);
   glutReshapeFunc(window_resize);
@@ -138,6 +146,17 @@ void init_object_vbo() {
   }
 
   glBindVertexArray(0);
+}
+
+void init_uniform_variables(const scene::Camera& camera)
+{
+    GLint loc = glGetUniformLocation(program_id, "model_view_matrix");
+    if (loc != -1)
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(camera.get_model_view_matrix()));
+
+    loc = glGetUniformLocation(program_id, "projection_matrix");
+    if (loc != -1)
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(camera.get_projection_matrix()));
 }
 
 void init_textures() {
@@ -295,8 +314,21 @@ int main(int argc, char *argv[]) {
   if (!init_glew())
     std::exit(-1);
   init_GL();
+
   init_shaders();
+
   init_object_vbo();
+  // Camera
+  scene::Camera camera({0.f, 0.f, 10.f}, // origin = camera axis
+                       {0.f, 1.f, 0.f}, // target = The *point* we look at in the scene
+                       {0.f, 1.f, 0.f}, // up vector
+                       0.5f, // z_min
+                       100.f, // z_max
+                       90.f, // alpha
+                       window_width, // width
+                       window_height);  // height
+  init_uniform_variables(camera);
+
   init_textures();
   glutMainLoop();
 }
