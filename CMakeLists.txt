@@ -26,10 +26,31 @@ find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} $(GLEW_INCLUDE_DIRS) ${GLM_INCLUDE_DIRS})
 
+# ---
+# Targets
+# ---
+
 SET(SRC src/image_io.cc
 	src/image.cc
 	src/main.cc)
 
+# Binary file
 add_executable(render ${SRC})
 target_link_libraries(render ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} ${GLM_LIBRARY})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_PATH}/../)
+
+# Copy binary to parent folder
+add_custom_target(copy_render
+    COMMAND ${CMAKE_COMMAND} -E copy render "../"
+    DEPENDS render
+    COMMENT "Copy `render` executable"
+    VERBATIM
+)
+
+# Run the copied binary in parent folder as working directory
+add_custom_target(run
+    COMMAND ./render
+    DEPENDS copy_render
+    WORKING_DIRECTORY ../
+    COMMENT "run`render` executable"
+    VERBATIM
+)
