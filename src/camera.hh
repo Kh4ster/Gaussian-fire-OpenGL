@@ -2,7 +2,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <cmath>
 
 namespace scene
 {
@@ -24,7 +23,8 @@ struct Camera final
         , alpha_(alpha)
         , width_(width)
         , height_(height)
-    {}
+    {
+    }
 
     Camera(const Camera&) = default;
     Camera& operator=(const Camera&) = default;
@@ -33,16 +33,14 @@ struct Camera final
 
     glm::mat4 get_projection_matrix() const
     {
-		return glm::perspectiveFov(alpha_, width_, height_, z_min_, z_max_);
+        return glm::perspectiveFov(alpha_, width_, height_, z_min_, z_max_);
     }
 
-	glm::mat4 get_model_view_matrix() const
-	{
-    	glm::mat4 view;
-		view = glm::lookAt(origin_, 
-						   target_, 
-						   up_);
-		return view;
+    glm::mat4 get_model_view_matrix() const
+    {
+        glm::mat4 view;
+        view = glm::lookAt(origin_, target_, up_);
+        return view;
     };
 
     // Origin of the camera `C` in 3D world
