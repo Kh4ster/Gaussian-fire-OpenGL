@@ -41,7 +41,7 @@ void display() {
     tifo::rgb24_image *texture = new tifo::rgb24_image(800, 590);
     glReadPixels(150, 350, 800, 590, GL_RGB, GL_UNSIGNED_BYTE, texture->pixels);TEST_OPENGL_ERROR();
     //glReadPixels(0, 0, 1024, 1024, GL_RGB, GL_UNSIGNED_BYTE, texture->pixels);
-    tifo::save_image(*texture, "render.tga");
+    tifo::save_image(*texture, "data/render.tga");
     std::cout << "Save " << std::endl;
     delete texture;
     //saved = true;
@@ -79,7 +79,6 @@ void init_GL() {
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
   glPixelStorei(GL_PACK_ALIGNMENT,1);
 }
-
 
 void init_object_vbo() {
   int max_nb_vbo = 5;
@@ -142,9 +141,9 @@ void init_object_vbo() {
 }
 
 void init_textures() {
-  tifo::rgb24_image *texture = tifo::load_image("texture.tga");
-  tifo::rgb24_image *lighting = tifo::load_image("lighting.tga");
-  tifo::rgb24_image *normalmap = tifo::load_image("normalmap.tga");
+  tifo::rgb24_image *texture = tifo::load_image("data/texture.tga");
+  tifo::rgb24_image *lighting = tifo::load_image("data/lighting.tga");
+  tifo::rgb24_image *normalmap = tifo::load_image("data/normalmap.tga");
   GLuint texture_id;
   GLuint lighting_id;
   GLuint normalmap_id;
@@ -224,8 +223,8 @@ std::string load(const std::string &filename) {
 }
 
 bool init_shaders() {
-  std::string vertex_src = load("vertex.shd");
-  std::string fragment_src = load("fragment.shd");
+  std::string vertex_src = load("shaders/vertex.shd");
+  std::string fragment_src = load("shaders/fragment.shd");
   GLuint shader_id[2];
   GLint compile_status = GL_TRUE;
   char *vertex_shd_src = (char*)std::malloc(vertex_src.length()*sizeof(char));
@@ -291,27 +290,7 @@ bool init_shaders() {
   return true;
 }
 
-/*void tmp() {
-  glt::matrix4 look = glt::matrix4::identity();
-  glt::matrix4 frustum = glt::matrix4::identity();
-
-  glt::frustum(frustum,
-	       -1, 1, -1, 1,
-	       5, 50000
-	     );
-
-  glt::look_at(look,
-	       20, 20, 20,
-  	       0, 0, 0,
-  	       0, 1, 0
-  	       );
-
-  std::cout << "Look\n" << look << "\n";
-  std::cout << "frustum\n" << frustum << std::endl;
-  }*/
-
 int main(int argc, char *argv[]) {
-  //  tmp();
   init_glut(argc, argv);
   if (!init_glew())
     std::exit(-1);

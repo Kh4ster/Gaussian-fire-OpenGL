@@ -25,5 +25,9 @@ find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} $(GLEW_INCLUDE_DIRS))
 
-add_executable(render main.cpp image_io.cpp image.cpp)
+SET(SRC src/image_io.cc
+	src/image.cc
+	src/main.cc)
+
+add_executable(render ${SRC})
 target_link_libraries(render ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES})
