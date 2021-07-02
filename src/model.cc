@@ -7,9 +7,12 @@
 namespace scene
 {
 
-Model::Model(const std::vector<Triangle>& triangles)
-    : triangles_(triangles)
+Model::Model(const std::vector<Triangle>& vertices,
+             const std::vector<Triangle>& normals)
+    : vertices_(vertices)
+    , normals_(normals)
 {
+    assert(vertices_.size() == normals_.size());
 }
 
 std::shared_ptr<Model> Model::from_file(const std::string& path)
@@ -25,9 +28,13 @@ std::shared_ptr<Model> Model::from_file(const std::string& path)
     std::ifstream in(path);
 
     // Vector of all vertices
-    std::vector<glm::vec3> vertices;
-    // List of all triangles (containing the vertices)
-    std::vector<Triangle> triangles;
+    std::vector<glm::vec3> all_vertices;
+    std::vector<glm::vec3> all_normals;
+
+    // List of all vertices stored as face
+    std::vector<Triangle> vertices;
+    // List of all normals stored as face (containing the normals)
+    std::vector<Triangle> normals;
 
     std::string line;
     while (std::getline(in, line) && line.size() > 2)
@@ -40,35 +47,77 @@ std::shared_ptr<Model> Model::from_file(const std::string& path)
             ss >> vertex.x;
             ss >> vertex.y;
             ss >> vertex.z;
-            vertices.push_back(vertex);
+            all_vertices.push_back(vertex);
+        }
+        else if (start == "vn")
+        {
+            std::istringstream ss(line.substr(2));
+            glm::vec3 normal;
+            ss >> normal.x;
+            ss >> normal.y;
+            ss >> normal.z;
+            all_normals.push_back(normal);
         }
         else if (start == "f ")
         {
-            Triangle triangle;
-            unsigned int index_vertex;
-            // First vertex
-            std::stringstream ss(line.substr(2));
-            ss >> index_vertex;
-            triangle.x = vertices[index_vertex - 1];
+            // line = `f 1/2/3 1/2/3 1/2/3`
+            Triangle face_vertices;
+            Triangle face_normals;
 
-            // Second vertex
-            std::string str2(ss.str());
-            size_t pos = str2.find(" ");
-            std::stringstream ss2(str2.substr(pos));
-            ss2 >> index_vertex;
-            triangle.y = vertices[index_vertex - 1];
+            std::istringstream ss(line.substr(2));
+            std::string token;
+            // first point
+            std::getline(ss, token, ' ');
+            {
+                std::istringstream local_ss(token);
+                std::string trash;
+                unsigned int vertex_index;
+                local_ss >> vertex_index;
+                local_ss >> trash; // skip `/`
+                unsigned int normal_index;
+                local_ss >> normal_index;
 
-            // Third vertex
-            pos = line.find_last_of(" ");
-            std::stringstream ss3(line.substr(pos));
-            ss3 >> index_vertex;
-            triangle.z = vertices[index_vertex - 1];
+                // index start at 1 in .obj file
+                face_vertices.x = all_vertices[vertex_index - 1];
+                face_normals.x = all_normals[normal_index - 1];
+            }
 
-            triangles.push_back(triangle);
+            // second point
+            std::getline(ss, token, ' ');
+            {
+                std::istringstream local_ss(token);
+                std::string trash;
+                unsigned int vertex_index;
+                local_ss >> vertex_index;
+                local_ss >> trash; // skip `/`
+                unsigned int normal_index;
+                local_ss >> normal_index;
+
+                face_vertices.y = all_vertices[vertex_index - 1];
+                face_normals.y = all_normals[normal_index - 1];
+            }
+
+            // third point
+            std::getline(ss, token, ' ');
+            {
+                std::istringstream local_ss(token);
+                std::string trash;
+                unsigned int vertex_index;
+                local_ss >> vertex_index;
+                local_ss >> trash; // skip `/`
+                unsigned int normal_index;
+                local_ss >> normal_index;
+
+                face_vertices.z = all_vertices[vertex_index - 1];
+                face_normals.z = all_normals[normal_index - 1];
+            }
+
+            vertices.push_back(face_vertices);
+            normals.push_back(face_normals);
         }
-        // `vn` and `vt` ignored. Everything else is ignored.
+        // vt` ignored. Everything else is ignored.
     }
 
-    return std::make_shared<Model>(triangles);
+    return std::make_shared<Model>(vertices, normals);
 }
 } // namespace scene
