@@ -81,8 +81,7 @@ int main(int argc, char* argv[])
 
     main_shader::init_shaders();
 
-    std::shared_ptr<scene::Model> model =
-        scene::Model::from_file("obj/cube.obj");
+    scene::main_model = scene::Model::from_file("locker.obj");
 
     main_shader::init_object_vbo(model);
     camera.update_camera(camera);

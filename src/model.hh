@@ -22,10 +22,11 @@ struct Triangle
 class Model
 {
   public:
+    Model() = default;
     Model(const std::vector<Triangle>& vertices_,
           const std::vector<Triangle>& normals);
 
-    static std::shared_ptr<Model> from_file(const std::string& path);
+    static Model from_file(const std::string& path);
 
     // Size is the same for vertices and normals
     std::size_t size() const
@@ -45,8 +46,10 @@ class Model
     };
 
   private:
-    Model() = default;
     std::vector<Triangle> vertices_;
     std::vector<Triangle> normals_;
 };
+
+static Model main_model;
+
 } // namespace scene

@@ -15,14 +15,14 @@ Model::Model(const std::vector<Triangle>& vertices,
     assert(vertices_.size() == normals_.size());
 }
 
-std::shared_ptr<Model> Model::from_file(const std::string& path)
+Model Model::from_file(const std::string& path)
 {
     size_t pos_extension = path.find_last_of(".");
     if (pos_extension == std::string::npos ||
         path.substr(pos_extension) != ".obj")
     {
         std::cerr << "Error: " << path << " is not a `.obj` file\n";
-        return nullptr;
+        return {};
     }
 
     std::ifstream in(path);
@@ -118,6 +118,6 @@ std::shared_ptr<Model> Model::from_file(const std::string& path)
         // vt` ignored. Everything else is ignored.
     }
 
-    return std::make_shared<Model>(vertices, normals);
+    return Model(vertices, normals);
 }
 } // namespace scene
