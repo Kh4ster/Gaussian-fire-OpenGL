@@ -39,7 +39,7 @@ struct Camera final
     glm::mat4 get_model_view_matrix() const
     {
         glm::mat4 view;
-        view = glm::lookAt(origin_, target_, up_);
+        view = glm::lookAt(origin_, origin_ + target_, up_);
         return view;
     };
 
@@ -61,6 +61,8 @@ struct Camera final
     // Image dimensions
     float width_;
     float height_;
+
+    const float base_speed = 3.f;
 };
 
 } // namespace scene

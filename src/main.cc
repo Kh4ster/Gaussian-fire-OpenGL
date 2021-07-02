@@ -5,6 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <ctime>
 
 //#include <glt_transform.hh>
 
@@ -38,6 +40,74 @@ void window_resize(int width, int height)
 bool saved = false;
 #endif
 
+constexpr int window_width = 1024;
+constexpr int window_height = 1024;
+
+// Camera
+scene::Camera camera(
+    {0.f, 0.f, -10.f}, // origin = camera axis
+    {0.f, 0.f, 1.f},  // target = The *point* we look at in the scene
+    {0.f, 1.f, 0.f},  // up vector
+    0.5f,             // z_min
+    100.f,            // z_max
+    90.f,             // alpha
+    window_width,     // width
+    window_height);   // height
+
+void update_camera()
+{
+    GLint loc = glGetUniformLocation(program_id, "model_view_matrix");
+    if (loc != -1)
+        glUniformMatrix4fv(loc,
+                           1,
+                           GL_FALSE,
+                           glm::value_ptr(camera.get_model_view_matrix()));
+
+    loc = glGetUniformLocation(program_id, "projection_matrix");
+    if (loc != -1)
+        glUniformMatrix4fv(loc,
+                           1,
+                           GL_FALSE,
+                           glm::value_ptr(camera.get_projection_matrix()));
+}
+
+std::chrono::duration<float> delta;
+auto last_frame = std::chrono::system_clock::now();
+
+void handle_keyboard(int key, int x, int y)
+{
+    // Compute elapsed time
+    auto current_frame = std::chrono::system_clock::now();
+    delta = current_frame - last_frame;
+    last_frame = current_frame;
+
+    float camera_speed = std::min(camera.base_speed * delta.count(), camera.base_speed * 0.05f);
+
+    switch(key)
+    {
+        case 101:
+            camera.origin_ += camera_speed * camera.target_;
+            break;
+        case 103:
+            camera.origin_ -= camera_speed * camera.target_;
+            break;
+        case 100:
+            camera.origin_ -= glm::normalize(glm::cross(camera.target_, camera.up_)) * camera_speed;
+            break;
+        case 102:
+            camera.origin_ += glm::normalize(glm::cross(camera.target_, camera.up_)) * camera_speed;
+            break;    
+        default:
+            return;
+    }
+
+    update_camera();
+
+
+    glutPostRedisplay();
+}
+
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -70,8 +140,6 @@ void display()
 #endif
     glutSwapBuffers();
 }
-constexpr int window_width = 1024;
-constexpr int window_height = 1024;
 
 void init_glut(int& argc, char* argv[])
 {
@@ -85,6 +153,7 @@ void init_glut(int& argc, char* argv[])
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Shader Programming");
     glutDisplayFunc(display);
+    glutSpecialFunc(handle_keyboard);
     glutReshapeFunc(window_resize);
 }
 
@@ -235,23 +304,6 @@ void init_object_vbo()
     }
 
     glBindVertexArray(0);
-}
-
-void init_uniform_variables(const scene::Camera& camera)
-{
-    GLint loc = glGetUniformLocation(program_id, "model_view_matrix");
-    if (loc != -1)
-        glUniformMatrix4fv(loc,
-                           1,
-                           GL_FALSE,
-                           glm::value_ptr(camera.get_model_view_matrix()));
-
-    loc = glGetUniformLocation(program_id, "projection_matrix");
-    if (loc != -1)
-        glUniformMatrix4fv(loc,
-                           1,
-                           GL_FALSE,
-                           glm::value_ptr(camera.get_projection_matrix()));
 }
 
 void init_textures()
@@ -497,17 +549,7 @@ int main(int argc, char* argv[])
     init_shaders();
 
     init_object_vbo();
-    // Camera
-    scene::Camera camera(
-        {0.f, 0.f, 10.f}, // origin = camera axis
-        {0.f, 1.f, 0.f},  // target = The *point* we look at in the scene
-        {0.f, 1.f, 0.f},  // up vector
-        0.5f,             // z_min
-        100.f,            // z_max
-        90.f,             // alpha
-        window_width,     // width
-        window_height);   // height
-    init_uniform_variables(camera);
+    update_camera();
 
     init_textures();
     glutMainLoop();
