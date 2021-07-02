@@ -5,8 +5,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <vector>
-#include <chrono>
-#include <ctime>
 
 //#include <glt_transform.hh>
 
@@ -14,6 +12,8 @@
 #include "image.hh"
 #include "image_io.hh"
 #include "object_vbo.hh"
+#include "mouse_handler.hh"
+#include "keyboard_handler.hh"
 
 //#define SAVE_RENDER
 
@@ -26,7 +26,7 @@
     } while (0)
 
 GLuint teapot_vao_id;
-GLuint program_id;
+
 
 void window_resize(int width, int height)
 {
@@ -39,118 +39,7 @@ void window_resize(int width, int height)
 #if defined(SAVE_RENDER)
 bool saved = false;
 #endif
-
-constexpr int window_width = 1024;
-constexpr int window_height = 1024;
-
-// Camera
-scene::Camera camera(
-    {0.f, 0.f, -10.f}, // origin = camera axis
-    {0.f, 0.f, 1.f},  // target = The *point* we look at in the scene
-    {0.f, 1.f, 0.f},  // up vector
-    0.5f,             // z_min
-    100.f,            // z_max
-    90.f,             // alpha
-    window_width,     // width
-    window_height);   // height
-
-void update_camera()
-{
-    GLint loc = glGetUniformLocation(program_id, "model_view_matrix");
-    if (loc != -1)
-        glUniformMatrix4fv(loc,
-                           1,
-                           GL_FALSE,
-                           glm::value_ptr(camera.get_model_view_matrix()));
-
-    loc = glGetUniformLocation(program_id, "projection_matrix");
-    if (loc != -1)
-        glUniformMatrix4fv(loc,
-                           1,
-                           GL_FALSE,
-                           glm::value_ptr(camera.get_projection_matrix()));
-}
-
-std::chrono::duration<float> delta;
-auto last_frame = std::chrono::system_clock::now();
-
-void handle_keyboard(int key, int x, int y)
-{
-    // Compute elapsed time
-    auto current_frame = std::chrono::system_clock::now();
-    delta = current_frame - last_frame;
-    last_frame = current_frame;
-
-    float camera_speed = std::min(camera.base_speed * delta.count(), camera.base_speed * 0.05f);
-
-    switch(key)
-    {
-        case 101:
-            camera.origin_ += camera_speed * camera.target_;
-            break;
-        case 103:
-            camera.origin_ -= camera_speed * camera.target_;
-            break;
-        case 100:
-            camera.origin_ -= glm::normalize(glm::cross(camera.target_, camera.up_)) * camera_speed;
-            break;
-        case 102:
-            camera.origin_ += glm::normalize(glm::cross(camera.target_, camera.up_)) * camera_speed;
-            break;    
-        default:
-            return;
-    }
-
-    update_camera();
-    glutPostRedisplay();
-}
-
-bool init_mouse = true;
-double last_x = window_width / 2;
-double last_y = window_height / 2;
-double yaw   = 90.0;
-double pitch = 0.0;
-
-void handle_mouse(int xpos, int ypos)
-{
-    if (init_mouse)
-    {
-        last_x = static_cast<double>(xpos);
-        last_y = static_cast<double>(ypos);
-        init_mouse = false;
-    }
   
-    float x_offset = xpos - last_x;
-    float y_offset = last_y - ypos; 
-    last_x = xpos;
-    last_y = ypos;
-
-    constexpr float sensitivity = 0.1f;
-    x_offset *= sensitivity;
-    y_offset *= sensitivity;
-
-    yaw   += x_offset;
-    pitch += y_offset;
-
-    pitch = std::min(pitch, 89.0);
-    pitch = std::max(pitch, -89.0);
-
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    camera.target_ = glm::normalize(direction);
-
-    if (last_x < window_width / 3 || last_x > window_width * 2 / 3 || last_y < window_height / 3 || last_y > window_height * 2 / 3)
-    {
-        glutWarpPointer(window_width / 2, window_height / 2);
-        last_x = window_width / 2;
-        last_y = window_height / 2;
-    }
-
-    update_camera();
-    glutPostRedisplay();
-}  
 
 void display()
 {
@@ -197,9 +86,9 @@ void init_glut(int& argc, char* argv[])
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Shader Programming");
     glutDisplayFunc(display);
-    glutSpecialFunc(handle_keyboard);
+    glutSpecialFunc(KeyboardHandler::handle_keyboard);
     glutSetCursor(GLUT_CURSOR_NONE);
-    glutPassiveMotionFunc(handle_mouse);
+    glutPassiveMotionFunc(MouseHandler::handle_mouse);
     glutReshapeFunc(window_resize);
 }
 
@@ -595,7 +484,7 @@ int main(int argc, char* argv[])
     init_shaders();
 
     init_object_vbo();
-    update_camera();
+    camera.update_camera(camera);
 
     init_textures();
     glutMainLoop();

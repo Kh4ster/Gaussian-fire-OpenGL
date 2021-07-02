@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "program_propreties.hh"
+
 namespace scene
 {
 struct Camera final
@@ -43,6 +45,23 @@ struct Camera final
         return view;
     };
 
+    void update_camera(const Camera& camera)
+    {
+        GLint loc = glGetUniformLocation(program_id, "model_view_matrix");
+        if (loc != -1)
+            glUniformMatrix4fv(loc,
+                            1,
+                            GL_FALSE,
+                            glm::value_ptr(camera.get_model_view_matrix()));
+
+        loc = glGetUniformLocation(program_id, "projection_matrix");
+        if (loc != -1)
+            glUniformMatrix4fv(loc,
+                            1,
+                            GL_FALSE,
+                            glm::value_ptr(camera.get_projection_matrix()));
+    }
+
     // Origin of the camera `C` in 3D world
     glm::vec3 origin_;
 
@@ -65,4 +84,16 @@ struct Camera final
     const float base_speed = 3.f;
 };
 
+
 } // namespace scene
+
+// Camera
+scene::Camera camera(
+    {0.f, 0.f, -10.f}, // origin = camera axis
+    {0.f, 0.f, 1.f},  // target = The *point* we look at in the scene
+    {0.f, 1.f, 0.f},  // up vector
+    0.5f,             // z_min
+    100.f,            // z_max
+    90.f,             // alpha
+    window_width,     // width
+    window_height);   // height
