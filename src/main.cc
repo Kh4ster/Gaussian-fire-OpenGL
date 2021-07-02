@@ -102,11 +102,55 @@ void handle_keyboard(int key, int x, int y)
     }
 
     update_camera();
-
-
     glutPostRedisplay();
 }
 
+bool init_mouse = true;
+double last_x = window_width / 2;
+double last_y = window_height / 2;
+double yaw   = 90.0;
+double pitch = 0.0;
+
+void handle_mouse(int xpos, int ypos)
+{
+    if (init_mouse)
+    {
+        last_x = static_cast<double>(xpos);
+        last_y = static_cast<double>(ypos);
+        init_mouse = false;
+    }
+  
+    float x_offset = xpos - last_x;
+    float y_offset = last_y - ypos; 
+    last_x = xpos;
+    last_y = ypos;
+
+    constexpr float sensitivity = 0.1f;
+    x_offset *= sensitivity;
+    y_offset *= sensitivity;
+
+    yaw   += x_offset;
+    pitch += y_offset;
+
+    pitch = std::min(pitch, 89.0);
+    pitch = std::max(pitch, -89.0);
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    camera.target_ = glm::normalize(direction);
+
+    if (last_x < window_width / 3 || last_x > window_width * 2 / 3 || last_y < window_height / 3 || last_y > window_height * 2 / 3)
+    {
+        glutWarpPointer(window_width / 2, window_height / 2);
+        last_x = window_width / 2;
+        last_y = window_height / 2;
+    }
+
+    update_camera();
+    glutPostRedisplay();
+}  
 
 void display()
 {
@@ -154,6 +198,8 @@ void init_glut(int& argc, char* argv[])
     glutCreateWindow("Shader Programming");
     glutDisplayFunc(display);
     glutSpecialFunc(handle_keyboard);
+    glutSetCursor(GLUT_CURSOR_NONE);
+    glutPassiveMotionFunc(handle_mouse);
     glutReshapeFunc(window_resize);
 }
 
