@@ -3,6 +3,7 @@
 #include <fstream>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <iostream>
 #include <vector>
 
@@ -14,6 +15,7 @@
 #include "object_vbo.hh"
 #include "mouse_handler.hh"
 #include "keyboard_handler.hh"
+#include "model.hh"
 
 //#define SAVE_RENDER
 
@@ -25,13 +27,10 @@
             std::cerr << "OpenGL ERROR!" << __LINE__ << std::endl;             \
     } while (0)
 
-GLuint teapot_vao_id;
-
+GLuint model_vao_id;
 
 void window_resize(int width, int height)
 {
-    // std::cout << "glViewport(0,0,"<< width << "," << height <<
-    // ");TEST_OPENGL_ERROR();" << std::endl;
     glViewport(0, 0, width, height);
     TEST_OPENGL_ERROR();
 }
@@ -39,15 +38,16 @@ void window_resize(int width, int height)
 #if defined(SAVE_RENDER)
 bool saved = false;
 #endif
-  
 
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     TEST_OPENGL_ERROR();
-    glBindVertexArray(teapot_vao_id);
+    glBindVertexArray(model_vao_id);
     TEST_OPENGL_ERROR();
-    glDrawArrays(GL_TRIANGLES, 0, vertex_buffer_data.size());
+    glDrawArrays(GL_TRIANGLES,
+                 0,
+                 vertex_buffer_data.size()); // FIXME: model->size()
     TEST_OPENGL_ERROR();
     glBindVertexArray(0);
     TEST_OPENGL_ERROR();
@@ -116,15 +116,18 @@ void init_GL()
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 }
 
-void init_object_vbo()
+void init_object_vbo(const std::shared_ptr<scene::Model>& model)
 {
-    int max_nb_vbo = 5;
+    int max_nb_vbo = 2; // FIXME: number of vbo
     int nb_vbo = 0;
     int index_vbo = 0;
     GLuint vbo_ids[max_nb_vbo];
 
     GLint vertex_location = glGetAttribLocation(program_id, "position");
     TEST_OPENGL_ERROR();
+    GLint normal_location = glGetAttribLocation(program_id, "normal");
+    TEST_OPENGL_ERROR();
+    /*
     GLint normal_flat_location = glGetAttribLocation(program_id, "normalFlat");
     TEST_OPENGL_ERROR();
     GLint normal_smooth_location =
@@ -134,14 +137,18 @@ void init_object_vbo()
     TEST_OPENGL_ERROR();
     GLint uv_location = glGetAttribLocation(program_id, "uv");
     TEST_OPENGL_ERROR();
+    */
 
-    glGenVertexArrays(1, &teapot_vao_id);
+    glGenVertexArrays(1, &model_vao_id);
     TEST_OPENGL_ERROR();
-    glBindVertexArray(teapot_vao_id);
+    glBindVertexArray(model_vao_id);
     TEST_OPENGL_ERROR();
 
     if (vertex_location != -1)
         nb_vbo++;
+    if (normal_location != -1)
+        nb_vbo++;
+    /*
     if (normal_flat_location != -1)
         nb_vbo++;
     if (normal_smooth_location != -1)
@@ -150,6 +157,7 @@ void init_object_vbo()
         nb_vbo++;
     if (uv_location != -1)
         nb_vbo++;
+    */
     glGenBuffers(nb_vbo, vbo_ids);
     TEST_OPENGL_ERROR();
 
@@ -158,8 +166,8 @@ void init_object_vbo()
         glBindBuffer(GL_ARRAY_BUFFER, vbo_ids[index_vbo++]);
         TEST_OPENGL_ERROR();
         glBufferData(GL_ARRAY_BUFFER,
-                     vertex_buffer_data.size() * sizeof(float),
-                     vertex_buffer_data.data(),
+                     model->size(),
+                     model->get_vertices(),
                      GL_STATIC_DRAW);
         TEST_OPENGL_ERROR();
         glVertexAttribPointer(vertex_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -167,7 +175,21 @@ void init_object_vbo()
         glEnableVertexAttribArray(vertex_location);
         TEST_OPENGL_ERROR();
     }
-
+    if (normal_location != -1)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_ids[index_vbo++]);
+        TEST_OPENGL_ERROR();
+        glBufferData(GL_ARRAY_BUFFER,
+                     model->size(),
+                     model->get_normals(),
+                     GL_STATIC_DRAW);
+        TEST_OPENGL_ERROR();
+        glVertexAttribPointer(normal_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        TEST_OPENGL_ERROR();
+        glEnableVertexAttribArray(normal_location);
+        TEST_OPENGL_ERROR();
+    }
+    /*
     if (normal_flat_location != -1)
     {
         glBindBuffer(GL_ARRAY_BUFFER, vbo_ids[index_vbo++]);
@@ -236,7 +258,7 @@ void init_object_vbo()
         TEST_OPENGL_ERROR();
         glEnableVertexAttribArray(uv_location);
         TEST_OPENGL_ERROR();
-    }
+    }*/
 
     glBindVertexArray(0);
 }
@@ -483,9 +505,13 @@ int main(int argc, char* argv[])
 
     init_shaders();
 
-    init_object_vbo();
+    std::shared_ptr<scene::Model> model =
+        scene::Model::from_file("obj/cube.obj");
+
+    init_object_vbo(model);
     camera.update_camera(camera);
 
-    init_textures();
+    // init_textures();
     glutMainLoop();
+    return 0;
 }
