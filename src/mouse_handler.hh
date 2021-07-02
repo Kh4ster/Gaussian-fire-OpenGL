@@ -21,9 +21,9 @@ struct MouseHandler
             last_y = static_cast<double>(ypos);
             init_mouse = false;
         }
-    
+
         float x_offset = xpos - last_x;
-        float y_offset = last_y - ypos; 
+        float y_offset = last_y - ypos;
         last_x = xpos;
         last_y = ypos;
 
@@ -31,7 +31,7 @@ struct MouseHandler
         x_offset *= sensitivity;
         y_offset *= sensitivity;
 
-        yaw   += x_offset;
+        yaw += x_offset;
         pitch += y_offset;
 
         pitch = std::min(pitch, 89.0);
@@ -43,7 +43,8 @@ struct MouseHandler
         direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
         camera.target_ = glm::normalize(direction);
 
-        if (last_x < window_width / 3 || last_x > window_width * 2 / 3 || last_y < window_height / 3 || last_y > window_height * 2 / 3)
+        if (fabs(last_x - window_center_x) > 250.0 ||
+            fabs(last_y - window_center_y) > 250.0)
         {
             glutWarpPointer(window_center_x, window_center_y);
             last_x = window_center_x;
@@ -55,8 +56,8 @@ struct MouseHandler
     }
 };
 
-bool   MouseHandler::init_mouse = true;
+bool MouseHandler::init_mouse = true;
 double MouseHandler::last_x = window_center_x;
 double MouseHandler::last_y = window_center_y;
-double MouseHandler::yaw   = 90.0;
+double MouseHandler::yaw = 90.0;
 double MouseHandler::pitch = 0.0;
