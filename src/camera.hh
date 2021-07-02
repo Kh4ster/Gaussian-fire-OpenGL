@@ -46,21 +46,21 @@ struct Camera final
         return view;
     };
 
-    void update_camera(const Camera& camera)
+    void update_camera()
     {
         GLint loc = glGetUniformLocation(program_id, "model_view_matrix");
         if (loc != -1)
             glUniformMatrix4fv(loc,
                                1,
                                GL_FALSE,
-                               glm::value_ptr(camera.get_model_view_matrix()));
+                               glm::value_ptr(get_model_view_matrix()));
 
         loc = glGetUniformLocation(program_id, "projection_matrix");
         if (loc != -1)
             glUniformMatrix4fv(loc,
                                1,
                                GL_FALSE,
-                               glm::value_ptr(camera.get_projection_matrix()));
+                               glm::value_ptr(get_projection_matrix()));
     }
 
     // Origin of the camera `C` in 3D world

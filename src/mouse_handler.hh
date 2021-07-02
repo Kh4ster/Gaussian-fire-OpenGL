@@ -52,7 +52,7 @@ struct MouseHandler
             last_y = window_center_y;
         }
 
-        camera.update_camera(camera);
+        camera.update_camera();
         glutPostRedisplay();
     }
 };

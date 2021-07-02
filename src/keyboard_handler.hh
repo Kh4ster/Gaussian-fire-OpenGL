@@ -5,6 +5,7 @@
 #include <ctime>
 #include <GL/freeglut.h>
 
+#include "mouse_handler.hh"
 #include "program_propreties.hh"
 #include "camera.hh"
 
@@ -12,6 +13,9 @@ struct KeyboardHandler
 {
     static std::chrono::duration<float> delta;
     static std::chrono::time_point<std::chrono::system_clock> last_frame;
+
+    static constexpr int delta_x = 10;
+    static constexpr int delta_y = 10;
 
     static void handle_keyboard(int key, int x, int y)
     {
@@ -49,8 +53,34 @@ struct KeyboardHandler
             return;
         }
 
-        camera.update_camera(camera);
+        camera.update_camera();
         glutPostRedisplay();
+    }
+
+    static void normal_key_handler(unsigned char key, int x, int y)
+    {
+        switch (key)
+        {
+        case 'w':
+            // TODO
+            MouseHandler::handle_mouse(MouseHandler::last_x,
+                                       MouseHandler::last_y - delta_y);
+            break;
+        case 'a':
+            MouseHandler::handle_mouse(MouseHandler::last_x - delta_x,
+                                       MouseHandler::last_y);
+            break;
+        case 's':
+            MouseHandler::handle_mouse(MouseHandler::last_x,
+                                       MouseHandler::last_y + delta_y);
+            break;
+        case 'd':
+            MouseHandler::handle_mouse(MouseHandler::last_x + delta_x,
+                                       MouseHandler::last_y);
+            break;
+        default:
+            return;
+        }
     }
 };
 

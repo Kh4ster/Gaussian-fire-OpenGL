@@ -43,6 +43,7 @@ void init_glut(int& argc, char* argv[])
     glutCreateWindow("Shader Programming");
     glutDisplayFunc(display);
     glutSpecialFunc(KeyboardHandler::handle_keyboard);
+    glutKeyboardFunc(KeyboardHandler::normal_key_handler);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutPassiveMotionFunc(MouseHandler::handle_mouse);
     glutReshapeFunc(window_resize);
@@ -84,7 +85,7 @@ int main(int argc, char* argv[])
     scene::main_model = scene::Model::from_file("locker.obj");
 
     main_shader::init_object_vbo(model);
-    camera.update_camera(camera);
+    camera.update_camera();
 
     lights[0] = {1.0, 1.5, 2.0};
     main_shader::init_lights();
