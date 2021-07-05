@@ -20,12 +20,6 @@ void window_resize(int width, int height)
     TEST_OPENGL_ERROR();
 }
 
-void display()
-{
-    // render_light_position();
-    Renderer::render_camera_position();
-}
-
 void init_glut(int& argc, char* argv[])
 {
     // glewExperimental = GL_TRUE;
@@ -36,7 +30,7 @@ void init_glut(int& argc, char* argv[])
     glutInitWindowSize(window_width, window_height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Shader Programming");
-    glutDisplayFunc(display);
+    glutDisplayFunc(Renderer::display);
     glutSpecialFunc(KeyboardHandler::handle_keyboard);
     glutKeyboardFunc(KeyboardHandler::normal_key_handler);
     glutSetCursor(GLUT_CURSOR_NONE);

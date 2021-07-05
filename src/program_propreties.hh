@@ -13,6 +13,7 @@ constexpr int window_center_x = 1024 / 2;
 constexpr int window_center_y = 1024 / 2;
 
 // Shadow shader
+GLuint shadow_program_id;
 GLuint depth_map_FBO;
 GLuint depth_map;
 glm::vec3 lights[1];

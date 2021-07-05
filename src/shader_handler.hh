@@ -35,7 +35,7 @@ std::string load(const std::string& filename)
 
 bool init_shaders(const std::string& vertex_path,
                   const std::string& fragment_path,
-                  GLuint id)
+                  GLuint& id)
 {
     std::string vertex_src = shader::load(vertex_path.c_str());
     std::string fragment_src = shader::load(fragment_path.c_str());
