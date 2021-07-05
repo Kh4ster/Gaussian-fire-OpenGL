@@ -6,15 +6,10 @@
 #include <iostream>
 #include <vector>
 
-//#include <glt_transform.hh>
-
-#include "camera.hh"
 #include "image.hh"
 #include "image_io.hh"
-#include "object_vbo.hh"
 #include "mouse_handler.hh"
 #include "keyboard_handler.hh"
-#include "model.hh"
 #include "renderer.hh"
 #include "main_shader.hh"
 #include "shadow_shader.hh"
@@ -84,7 +79,7 @@ int main(int argc, char* argv[])
 
     scene::main_model = scene::Model::from_file("locker.obj");
 
-    main_shader::init_object_vbo(model);
+    main_shader::init_object_vbo();
     camera.update_camera();
 
     lights[0] = {1.0, 1.5, 2.0};

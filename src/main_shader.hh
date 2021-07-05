@@ -9,7 +9,7 @@
 
 namespace main_shader
 {
-void init_object_vbo(const std::shared_ptr<scene::Model>& model)
+void init_object_vbo()
 {
     int max_nb_vbo = 2; // FIXME: number of vbo
     int nb_vbo = 0;
@@ -59,8 +59,8 @@ void init_object_vbo(const std::shared_ptr<scene::Model>& model)
         glBindBuffer(GL_ARRAY_BUFFER, vbo_ids[index_vbo++]);
         TEST_OPENGL_ERROR();
         glBufferData(GL_ARRAY_BUFFER,
-                     model->size(),
-                     model->get_vertices(),
+                     scene::main_model.size(),
+                     scene::main_model.get_vertices(),
                      GL_STATIC_DRAW);
         TEST_OPENGL_ERROR();
         glVertexAttribPointer(vertex_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -73,8 +73,8 @@ void init_object_vbo(const std::shared_ptr<scene::Model>& model)
         glBindBuffer(GL_ARRAY_BUFFER, vbo_ids[index_vbo++]);
         TEST_OPENGL_ERROR();
         glBufferData(GL_ARRAY_BUFFER,
-                     model->size(),
-                     model->get_normals(),
+                     scene::main_model.size(),
+                     scene::main_model.get_normals(),
                      GL_STATIC_DRAW);
         TEST_OPENGL_ERROR();
         glVertexAttribPointer(normal_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -376,4 +376,4 @@ bool init_shaders()
     TEST_OPENGL_ERROR();
     return true;
 }
-}
+} // namespace main_shader

@@ -6,6 +6,7 @@
 #include "object_vbo.hh"
 #include "camera.hh"
 #include "shader_handler.hh"
+#include "model.hh"
 
 struct Renderer
 {
@@ -13,9 +14,7 @@ struct Renderer
     {
         glBindVertexArray(model_vao_id);
         TEST_OPENGL_ERROR();
-        glDrawArrays(GL_TRIANGLES,
-                     0,
-                     vertex_buffer_data.size()); // FIXME: model->size()
+        glDrawArrays(GL_TRIANGLES, 0, scene::main_model.size());
         TEST_OPENGL_ERROR();
         glBindVertexArray(0);
         TEST_OPENGL_ERROR();
