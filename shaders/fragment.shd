@@ -7,6 +7,8 @@
 
 layout(location=0) out vec4 output_color;
 
+uniform float strength_light;
+
 // in vec4 gl_FragCoord;
 in vec3 ocolor;
 in vec3 onormal;
@@ -15,5 +17,8 @@ in vec3 light_dir;
 
 void main() {
     // output_color = vec4(ocolor, 1.f) + (texture2D(normalmap_sampler, ouv) * 2 - 1);
-    output_color = vec4(clamp(dot(onormal, light_dir) * ocolor, 0.f, 1.f), 1.f);
+    float len_to_light = length(light_dir);
+    float distance_factor = clamp(1 / len_to_light * strength_light, 0.f, 1.f);
+    vec3 computed_color = dot(onormal, normalize(light_dir)) * ocolor * distance_factor;
+    output_color = vec4(clamp(computed_color, 0.f, 1.f), 1.f);
 }

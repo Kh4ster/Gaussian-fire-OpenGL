@@ -77,12 +77,16 @@ int main(int argc, char* argv[])
 
     main_shader::init_shaders();
 
-    scene::main_model = scene::Model::from_file("locker.obj");
+    scene::main_model = scene::Model::from_file("obj/cube_plan.obj");
 
     main_shader::init_object_vbo();
     camera.update_camera();
 
-    lights[0] = {1.0, 1.5, 2.0};
+    // x -> front to back
+    // y -> top to bottom
+    // z -> left to right
+    lights[0] = {-3.0, 5.0, -1.0};
+    strength_light[0] = 3.0;
     main_shader::init_lights();
 
     shadow_shader::init_fbo();

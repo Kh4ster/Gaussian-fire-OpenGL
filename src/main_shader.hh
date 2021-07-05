@@ -282,6 +282,9 @@ void init_lights()
     GLint loc = glGetUniformLocation(program_id, "light_position");
     if (loc != -1)
         glUniform3f(loc, lights[0][0], lights[0][1], lights[0][2]);
+    loc = glGetUniformLocation(program_id, "strength_light");
+    if (loc != -1)
+        glUniform1f(loc, strength_light[0]);
 }
 
 bool init_shaders()
