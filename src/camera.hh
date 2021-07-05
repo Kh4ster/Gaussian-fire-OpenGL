@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "program_propreties.hh"
 
@@ -50,16 +51,16 @@ struct Camera final
         GLint loc = glGetUniformLocation(program_id, "model_view_matrix");
         if (loc != -1)
             glUniformMatrix4fv(loc,
-                            1,
-                            GL_FALSE,
-                            glm::value_ptr(camera.get_model_view_matrix()));
+                               1,
+                               GL_FALSE,
+                               glm::value_ptr(camera.get_model_view_matrix()));
 
         loc = glGetUniformLocation(program_id, "projection_matrix");
         if (loc != -1)
             glUniformMatrix4fv(loc,
-                            1,
-                            GL_FALSE,
-                            glm::value_ptr(camera.get_projection_matrix()));
+                               1,
+                               GL_FALSE,
+                               glm::value_ptr(camera.get_projection_matrix()));
     }
 
     // Origin of the camera `C` in 3D world
@@ -81,19 +82,18 @@ struct Camera final
     float width_;
     float height_;
 
-    const float base_speed = 3.f;
+    const float base_speed = 6.f;
 };
-
 
 } // namespace scene
 
 // Camera
-scene::Camera camera(
-    {0.f, 0.f, -10.f}, // origin = camera axis
-    {0.f, 0.f, 1.f},  // target = The *point* we look at in the scene
-    {0.f, 1.f, 0.f},  // up vector
-    0.5f,             // z_min
-    100.f,            // z_max
-    90.f,             // alpha
-    window_width,     // width
-    window_height);   // height
+scene::Camera
+    camera({0.f, 0.f, -10.f}, // origin = camera axis
+           {0.f, 0.f, 1.f},   // target = The *point* we look at in the scene
+           {0.f, 1.f, 0.f},   // up vector
+           0.5f,              // z_min
+           100.f,             // z_max
+           90.f,              // alpha
+           window_width,      // width
+           window_height);    // height
