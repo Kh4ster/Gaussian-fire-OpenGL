@@ -71,6 +71,7 @@ int main(int argc, char* argv[])
         std::exit(-1);
     init_GL();
 
+    //------- Init Main shader
     main_shader::init_shaders();
 
     scene::main_model = scene::Model::from_file("obj/cube_plan.obj");
@@ -84,10 +85,13 @@ int main(int argc, char* argv[])
     const glm::vec3 light_origin = {-3.0, 5.0, -3.0};
     scene::main_light = scene::Light(light_origin, 3.f);
     main_shader::init_lights();
+    // main_shader::init_textures();
 
+    //------- Init shadow shader
+    shadow_shader::init_shaders();
     shadow_shader::init_fbo();
+    shadow_shader::init_object_vbo();
 
-    // init_textures();
     glutMainLoop();
     return 0;
 }

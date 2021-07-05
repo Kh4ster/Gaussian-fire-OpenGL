@@ -1,0 +1,6 @@
+#version 450
+
+void main() {
+    // Do nothing, because the following is implicit
+    // gl_FragDepth = gl_FragCoord.z;
+}

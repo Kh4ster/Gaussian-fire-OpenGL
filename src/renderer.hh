@@ -12,9 +12,9 @@
 namespace Renderer
 {
 
-static void render_vao()
+static void render_scene(GLuint model_vao)
 {
-    glBindVertexArray(model_vao_id);
+    glBindVertexArray(model_vao);
     TEST_OPENGL_ERROR();
     glDrawArrays(GL_TRIANGLES, 0, scene::main_model.size());
     TEST_OPENGL_ERROR();
@@ -43,15 +43,28 @@ static void render_shadow()
                                                     glm::vec3(0.f, 0.f, 0.f),
                                                     scene::camera.up_);
 
-    render_vao();
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    GLint loc = glGetUniformLocation(shadow_program_id, "model_view_matrix");
+    if (loc != -1)
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(light_view_matrix));
+
+    loc = glGetUniformLocation(shadow_program_id, "projection_matrix");
+    if (loc != -1)
+        glUniformMatrix4fv(loc,
+                           1,
+                           GL_FALSE,
+                           glm::value_ptr(light_projection_matrix));
     TEST_OPENGL_ERROR();
-    glViewport(0, 0, window_width, window_height);
+
+    render_scene(model_shadow_vao_id);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     TEST_OPENGL_ERROR();
 }
 
 static void render_camera_position()
 {
+    glUseProgram(program_id);
+    TEST_OPENGL_ERROR();
+
     // reset viewport
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -59,14 +72,13 @@ static void render_camera_position()
     glUseProgram(program_id);
     TEST_OPENGL_ERROR();
 
-    render_vao();
-
-    glutSwapBuffers();
+    render_scene(model_vao_id);
 }
 
 void display()
 {
-    // render_shadow();
+    render_shadow();
     render_camera_position();
+    glutSwapBuffers();
 }
 } // namespace Renderer

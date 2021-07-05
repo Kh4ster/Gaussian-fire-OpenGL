@@ -42,4 +42,48 @@ void init_fbo()
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+static void init_object_vbo()
+{
+    int max_nb_vbo = 1;
+    int nb_vbo = 0;
+    int index_vbo = 0;
+    GLuint vbo_ids[max_nb_vbo];
+
+    GLint vertex_location = glGetAttribLocation(program_id, "position");
+    TEST_OPENGL_ERROR();
+
+    glGenVertexArrays(1, &model_shadow_vao_id);
+    TEST_OPENGL_ERROR();
+    glBindVertexArray(model_vao_id);
+    TEST_OPENGL_ERROR();
+
+    if (vertex_location != -1)
+        nb_vbo++;
+
+    glGenBuffers(nb_vbo, vbo_ids);
+    TEST_OPENGL_ERROR();
+
+    if (vertex_location != -1)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_ids[index_vbo++]);
+        TEST_OPENGL_ERROR();
+        glBufferData(GL_ARRAY_BUFFER,
+                     scene::main_model.size(),
+                     scene::main_model.get_vertices(),
+                     GL_STATIC_DRAW);
+        TEST_OPENGL_ERROR();
+        glVertexAttribPointer(vertex_location, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        TEST_OPENGL_ERROR();
+        glEnableVertexAttribArray(vertex_location);
+        TEST_OPENGL_ERROR();
+    }
+}
+
+bool init_shaders()
+{
+    return shader::init_shaders("shaders/shadow_vertex.shd",
+                                "shaders/shadow_fragment.shd",
+                                shadow_program_id);
+}
 } // namespace shadow_shader

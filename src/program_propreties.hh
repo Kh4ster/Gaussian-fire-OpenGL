@@ -14,6 +14,7 @@ constexpr int window_center_y = 1024 / 2;
 
 // Shadow shader
 GLuint shadow_program_id;
+GLuint model_shadow_vao_id; // probably useless and use only one vao
 GLuint depth_map_FBO;
 GLuint depth_map;
 
