@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
     // x -> front to back
     // y -> top to bottom
     // z -> left to right
-    lights[0] = {-3.0, 5.0, -1.0};
+    lights[0] = {-3.0, 5.0, -3.0};
     strength_light[0] = 3.0;
     main_shader::init_lights();
 

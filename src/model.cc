@@ -69,54 +69,27 @@ Model Model::from_file(const std::string& path)
             Triangle face_vertices;
             Triangle face_normals;
 
-            std::istringstream ss(line.substr(2));
-            std::string token;
-            // first point
-            std::getline(ss, token, ' ');
-            {
-                std::istringstream local_ss(token);
-                std::string trash;
-                unsigned int vertex_index;
-                local_ss >> vertex_index;
-                local_ss >> trash; // skip `/`
-                unsigned int normal_index;
-                local_ss >> normal_index;
+            unsigned int vertex1, vertex2, vertex3;
+            unsigned int texture1, texture2, texture3;
+            unsigned int normal1, normal2, normal3;
+            sscanf(line.c_str(),
+                   "f %i/%i/%i %i/%i/%i %i/%i/%i",
+                   &vertex1,
+                   &texture1,
+                   &normal1,
+                   &vertex2,
+                   &texture2,
+                   &normal2,
+                   &vertex3,
+                   &texture3,
+                   &normal3);
 
-                // index start at 1 in .obj file
-                face_vertices.x = all_vertices[vertex_index - 1];
-                face_normals.x = all_normals[normal_index - 1];
-            }
-
-            // second point
-            std::getline(ss, token, ' ');
-            {
-                std::istringstream local_ss(token);
-                std::string trash;
-                unsigned int vertex_index;
-                local_ss >> vertex_index;
-                local_ss >> trash; // skip `/`
-                unsigned int normal_index;
-                local_ss >> normal_index;
-
-                face_vertices.y = all_vertices[vertex_index - 1];
-                face_normals.y = all_normals[normal_index - 1];
-            }
-
-            // third point
-            std::getline(ss, token, ' ');
-            {
-                std::istringstream local_ss(token);
-                std::string trash;
-                unsigned int vertex_index;
-                local_ss >> vertex_index;
-                local_ss >> trash; // skip `/`
-                unsigned int normal_index;
-                local_ss >> normal_index;
-
-                face_vertices.z = all_vertices[vertex_index - 1];
-                face_normals.z = all_normals[normal_index - 1];
-            }
-
+            face_vertices = {all_vertices[vertex1 - 1],
+                             all_vertices[vertex2 - 1],
+                             all_vertices[vertex3 - 1]};
+            face_normals = {all_normals[normal1 - 1],
+                            all_normals[normal2 - 1],
+                            all_normals[normal3 - 1]};
             vertices.push_back(face_vertices);
             normals.push_back(face_normals);
         }
