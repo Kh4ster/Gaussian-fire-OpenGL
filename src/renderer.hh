@@ -7,6 +7,7 @@
 #include "camera.hh"
 #include "shader_handler.hh"
 #include "model.hh"
+#include "light.hh"
 
 namespace Renderer
 {
@@ -33,11 +34,16 @@ static void render_shadow()
     glClear(GL_DEPTH_BUFFER_BIT);
     TEST_OPENGL_ERROR();
 
-    const glm::vec3 old = camera.origin_;
-    camera.origin_ = lights[0];
-    render_vao();
-    camera.origin_ = old;
+    const glm::mat4 light_projection_matrix =
+        glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 7.5f);
+    // Look from the light position
+    // to the middle of the scene
+    // up vector same as camera
+    const glm::mat4 light_view_matrix = glm::lookAt(scene::main_light.origin_,
+                                                    glm::vec3(0.f, 0.f, 0.f),
+                                                    scene::camera.up_);
 
+    render_vao();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     TEST_OPENGL_ERROR();
     glViewport(0, 0, window_width, window_height);

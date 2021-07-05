@@ -16,7 +16,5 @@ constexpr int window_center_y = 1024 / 2;
 GLuint shadow_program_id;
 GLuint depth_map_FBO;
 GLuint depth_map;
-glm::vec3 lights[1];
-float strength_light[1];
 
 constexpr unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;

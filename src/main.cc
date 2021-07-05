@@ -13,6 +13,8 @@
 #include "renderer.hh"
 #include "main_shader.hh"
 #include "shadow_shader.hh"
+#include "light.hh"
+#include "model.hh"
 
 void window_resize(int width, int height)
 {
@@ -74,13 +76,13 @@ int main(int argc, char* argv[])
     scene::main_model = scene::Model::from_file("obj/cube_plan.obj");
 
     main_shader::init_object_vbo();
-    camera.update_camera();
+    scene::camera.update_camera();
 
     // x -> front to back
     // y -> top to bottom
     // z -> left to right
-    lights[0] = {-3.0, 5.0, -3.0};
-    strength_light[0] = 3.0;
+    const glm::vec3 light_origin = {-3.0, 5.0, -3.0};
+    scene::main_light = scene::Light(light_origin, 3.f);
     main_shader::init_lights();
 
     shadow_shader::init_fbo();

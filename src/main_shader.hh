@@ -4,6 +4,7 @@
 #include <GL/freeglut.h>
 #include <memory>
 #include "model.hh"
+#include "light.hh"
 #include "program_propreties.hh"
 #include "shader_handler.hh"
 
@@ -280,17 +281,18 @@ void init_textures()
 void init_lights()
 {
     GLint loc = glGetUniformLocation(program_id, "light_position");
+    const glm::vec3& origin = scene::main_light.origin_;
     if (loc != -1)
-        glUniform3f(loc, lights[0][0], lights[0][1], lights[0][2]);
+        glUniform3f(loc, origin[0], origin[1], origin[2]);
     loc = glGetUniformLocation(program_id, "strength_light");
     if (loc != -1)
-        glUniform1f(loc, strength_light[0]);
+        glUniform1f(loc, scene::main_light.strength_);
 }
 
 bool init_shaders()
 {
-    return shader::init_shaders("shaders/vertex.shd",
-                                "shaders/fragment.shd",
+    return shader::init_shaders("shaders/main_vertex.shd",
+                                "shaders/main_fragment.shd",
                                 program_id);
 }
 } // namespace main_shader

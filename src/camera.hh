@@ -67,7 +67,7 @@ struct Camera final
     glm::vec3 origin_;
 
     // Up vector in 3D world
-    glm::vec3 up_;
+    const glm::vec3 up_;
     // Target point of the camera in 3D world
     glm::vec3 target_;
 
@@ -85,15 +85,14 @@ struct Camera final
     const float base_speed = 6.f;
 };
 
-} // namespace scene
-
 // Camera
-scene::Camera
-    camera({-5.f, 2.f, 0.f}, // origin = camera axis
-           {1.f, 0.f, 0.f},  // target = The *point* we look at in the scene
-           {0.f, 1.f, 0.f},  // up vector
-           0.5f,             // z_min
-           100.f,            // z_max
-           90.f,             // alpha
-           window_width,     // width
-           window_height);   // height
+Camera camera({-5.f, 2.f, 0.f}, // origin = camera axis
+              {1.f, 0.f, 0.f},  // target = The *point* we look at in the scene
+              {0.f, 1.f, 0.f},  // up vector
+              0.5f,             // z_min
+              100.f,            // z_max
+              90.f,             // alpha
+              window_width,     // width
+              window_height);   // height
+
+} // namespace scene

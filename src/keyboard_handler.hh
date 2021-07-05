@@ -24,25 +24,27 @@ struct KeyboardHandler
         delta = current_frame - last_frame;
         last_frame = current_frame;
 
-        float camera_speed = std::min(camera.base_speed * delta.count(),
-                                      camera.base_speed * 0.05f);
+        float camera_speed = std::min(scene::camera.base_speed * delta.count(),
+                                      scene::camera.base_speed * 0.05f);
 
         switch (key)
         {
         case GLUT_KEY_UP:
-            camera.origin_ += camera_speed * camera.target_;
+            scene::camera.origin_ += camera_speed * scene::camera.target_;
             break;
         case GLUT_KEY_DOWN:
-            camera.origin_ -= camera_speed * camera.target_;
+            scene::camera.origin_ -= camera_speed * scene::camera.target_;
             break;
         case GLUT_KEY_LEFT:
-            camera.origin_ -=
-                glm::normalize(glm::cross(camera.target_, camera.up_)) *
+            scene::camera.origin_ -=
+                glm::normalize(
+                    glm::cross(scene::camera.target_, scene::camera.up_)) *
                 camera_speed;
             break;
         case GLUT_KEY_RIGHT:
-            camera.origin_ +=
-                glm::normalize(glm::cross(camera.target_, camera.up_)) *
+            scene::camera.origin_ +=
+                glm::normalize(
+                    glm::cross(scene::camera.target_, scene::camera.up_)) *
                 camera_speed;
             break;
         case GLUT_KEY_F1:
@@ -53,7 +55,7 @@ struct KeyboardHandler
             return;
         }
 
-        camera.update_camera();
+        scene::camera.update_camera();
         glutPostRedisplay();
     }
 

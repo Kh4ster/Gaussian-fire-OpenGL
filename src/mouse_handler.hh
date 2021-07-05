@@ -42,7 +42,7 @@ struct MouseHandler
         direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
         direction.y = sin(glm::radians(pitch));
         direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        camera.target_ = glm::normalize(direction);
+        scene::camera.target_ = glm::normalize(direction);
 
         if (fabs(last_x - window_center_x) > 250.0 ||
             fabs(last_y - window_center_y) > 250.0)
@@ -52,7 +52,7 @@ struct MouseHandler
             last_y = window_center_y;
         }
 
-        camera.update_camera();
+        scene::camera.update_camera();
         glutPostRedisplay();
     }
 };
