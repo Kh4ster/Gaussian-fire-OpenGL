@@ -26,6 +26,11 @@ Model Model::from_file(const std::string& path)
     }
 
     std::ifstream in(path);
+    if (!in)
+    {
+        std::cerr << "Error: No such file: " << path << "\n";
+        return {};
+    }
 
     // Vector of all vertices
     std::vector<glm::vec3> all_vertices;

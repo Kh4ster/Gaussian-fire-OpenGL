@@ -4,3 +4,6 @@ build_debug
 render
 .gdb_history
 untitled.obj
+*.obj
+*.mtl
+*.blend
