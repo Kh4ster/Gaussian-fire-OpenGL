@@ -277,6 +277,13 @@ void init_textures()
     delete normalmap;
 }
 
+void init_lights()
+{
+    GLint loc = glGetUniformLocation(program_id, "light_position");
+    if (loc != -1)
+        glUniform3f(loc, lights[0][0], lights[0][1], lights[0][2]);
+}
+
 bool init_shaders()
 {
     std::string vertex_src = shader::load("shaders/vertex.shd");

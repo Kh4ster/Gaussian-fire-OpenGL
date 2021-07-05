@@ -71,15 +71,6 @@ void init_GL()
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 }
 
-void init_lights()
-{
-    lights[0] = {1.0, 1.0, 2.0};
-
-    GLint loc = glGetUniformLocation(program_id, "light_position");
-    if (loc != -1)
-        glUniform3f(loc, lights[0][0], lights[0][1], lights[0][2]);
-}
-
 void init_buffers()
 {
     glGenFramebuffers(1, &depth_map_FBO);
@@ -127,7 +118,8 @@ int main(int argc, char* argv[])
     main_shader::init_object_vbo(model);
     camera.update_camera(camera);
 
-    // init_lights();
+    lights[0] = {1.0, 1.5, 2.0};
+    main_shader::init_lights();
 
     // init_textures();
     glutMainLoop();
