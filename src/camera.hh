@@ -89,11 +89,11 @@ struct Camera final
 
 // Camera
 scene::Camera
-    camera({0.f, 0.f, -10.f}, // origin = camera axis
-           {0.f, 0.f, 1.f},   // target = The *point* we look at in the scene
-           {0.f, 1.f, 0.f},   // up vector
-           0.5f,              // z_min
-           100.f,             // z_max
-           90.f,              // alpha
-           window_width,      // width
-           window_height);    // height
+    camera({-5.f, 2.f, 0.f}, // origin = camera axis
+           {1.f, 0.f, 0.f},  // target = The *point* we look at in the scene
+           {0.f, 1.f, 0.f},  // up vector
+           0.5f,             // z_min
+           100.f,            // z_max
+           90.f,             // alpha
+           window_width,     // width
+           window_height);   // height
