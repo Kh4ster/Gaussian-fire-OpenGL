@@ -35,7 +35,12 @@ static void render_shadow()
     TEST_OPENGL_ERROR();
 
     const glm::mat4 light_projection_matrix =
-        glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 7.5f);
+        glm::ortho(-10.0f,
+                   10.0f,
+                   -10.0f,
+                   10.0f,
+                   scene::camera.z_min_, // FIXME?
+                   scene::camera.z_max_);
     // Look from the light position
     // to the middle of the scene
     // up vector same as camera
@@ -69,16 +74,79 @@ static void render_camera_position()
     glViewport(0, 0, window_width, window_height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     TEST_OPENGL_ERROR();
-    glUseProgram(program_id);
-    TEST_OPENGL_ERROR();
 
     render_scene(model_vao_id);
 }
 
+static void render_quad()
+{
+    glUseProgram(quad_program_id);
+    TEST_OPENGL_ERROR();
+
+    glViewport(0, 0, window_width, window_height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    TEST_OPENGL_ERROR();
+
+    GLint loc = glGetUniformLocation(quad_program_id, "near_plane");
+    if (loc != -1)
+        glUniform1f(loc, scene::camera.z_min_);
+    loc = glGetUniformLocation(quad_program_id, "far_plane");
+    if (loc != -1)
+        glUniform1f(loc, scene::camera.z_max_);
+    TEST_OPENGL_ERROR();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, depth_map);
+    TEST_OPENGL_ERROR();
+
+    GLuint quad_vbo;
+    if (quad_vao == 0)
+    {
+        float quadVertices[] = {
+            // positions        // texture Coords
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f,  -1.0f, 0.0f, 1.0f, 0.0f,
+        };
+        // setup plane VAO
+        glGenVertexArrays(1, &quad_vao);
+        glGenBuffers(1, &quad_vbo);
+        glBindVertexArray(quad_vao);
+        glBindBuffer(GL_ARRAY_BUFFER, quad_vbo);
+        glBufferData(GL_ARRAY_BUFFER,
+                     sizeof(quadVertices),
+                     &quadVertices,
+                     GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0,
+                              3,
+                              GL_FLOAT,
+                              GL_FALSE,
+                              5 * sizeof(float),
+                              (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1,
+                              2,
+                              GL_FLOAT,
+                              GL_FALSE,
+                              5 * sizeof(float),
+                              (void*)(3 * sizeof(float)));
+    }
+    glBindVertexArray(quad_vao);
+    TEST_OPENGL_ERROR();
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+    TEST_OPENGL_ERROR();
+}
+
 void display()
 {
+    TEST_OPENGL_ERROR();
     render_shadow();
-    render_camera_position();
+    TEST_OPENGL_ERROR();
+    // render_camera_position();
+    render_quad();
+    TEST_OPENGL_ERROR();
     glutSwapBuffers();
 }
 } // namespace Renderer

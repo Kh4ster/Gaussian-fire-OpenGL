@@ -19,3 +19,7 @@ GLuint depth_map_FBO;
 GLuint depth_map;
 
 constexpr unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
+// Quad shader
+GLuint quad_program_id;
+GLuint quad_vao;

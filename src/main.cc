@@ -13,6 +13,7 @@
 #include "renderer.hh"
 #include "main_shader.hh"
 #include "shadow_shader.hh"
+#include "quad_shader.hh"
 #include "light.hh"
 #include "model.hh"
 
@@ -91,6 +92,9 @@ int main(int argc, char* argv[])
     shadow_shader::init_shaders();
     shadow_shader::init_fbo();
     shadow_shader::init_object_vbo();
+
+    //------- Init quad shader
+    quad_shader::init_shaders();
 
     glutMainLoop();
     return 0;
