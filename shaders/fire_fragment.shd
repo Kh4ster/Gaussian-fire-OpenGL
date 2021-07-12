@@ -3,11 +3,11 @@
 uniform sampler2D sampler;
 
 // in vec2 tex_coords;
-// in vec4 particle_color;
+in vec4 particle_color;
 
 layout(location=0) out vec4 output_color;
 
 void main()
 {
-    output_color = vec4(0.f, 1.f, 0.f, 1.f); // vec4(texture(sampler, tex_coords) * particle_color);
+    output_color = particle_color; // vec4(texture(sampler, tex_coords) * particle_color);
 }

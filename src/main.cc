@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
     //------- Init Main shader
     main_shader::init_shaders();
 
-    scene::main_model = scene::Model::from_file("obj/tmp.obj");
+    scene::main_model = scene::Model::from_file("obj/plane.obj");
 
     main_shader::init_object_vbo();
 
@@ -107,10 +107,11 @@ int main(int argc, char* argv[])
     TEST_OPENGL_ERROR();
     fire_shader::init_matrices(scene::camera);
     TEST_OPENGL_ERROR();
-    particle::generator = particle::ParticleGenerator(glm::vec2(1.f, 2.f),
-                                                      glm::vec2(0.f, 0.f),
-                                                      fire_texture,
-                                                      20);
+    particle::generator =
+        particle::ParticleGenerator(glm::vec3(1.f, 1.f, 1.f), // velocity
+                                    glm::vec3(0.f, 0.f, 0.f), // position
+                                    fire_texture,
+                                    20); // number of particles
     TEST_OPENGL_ERROR();
 
     glutTimerFunc(0, timer, 0);

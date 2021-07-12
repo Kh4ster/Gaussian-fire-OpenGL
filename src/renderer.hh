@@ -101,7 +101,12 @@ static void render_fire()
         {
             GLint loc = glGetUniformLocation(fire_program_id, "position");
             if (loc != -1)
-                glUniform2f(loc, particle.position[0], particle.position[0]);
+            {
+                glUniform3f(loc,
+                            particle.position[0],
+                            particle.position[1],
+                            particle.position[2]);
+            }
             loc = glGetUniformLocation(fire_program_id, "color");
             if (loc != -1)
             {

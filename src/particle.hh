@@ -7,8 +7,8 @@ namespace particle
 {
 struct Particle
 {
-    Particle(const glm::vec2 _position,
-             const glm::vec2 _velocity,
+    Particle(const glm::vec3 _position,
+             const glm::vec3 _velocity,
              const float _life,
              const glm::vec4 _color)
         : position(_position)
@@ -25,8 +25,8 @@ struct Particle
     static constexpr float base_life = 1.f;
     static constexpr float delta = 0.1f;
 
-    glm::vec2 position = {0.f, 0.f};
-    glm::vec2 velocity = {0.f, 0.f};
+    glm::vec3 position = {0.f, 0.f, 0.f};
+    glm::vec3 velocity = {0.f, 0.f, 0.f};
     float life = 0.f;
     glm::vec4 color = {1.f, 0.f, 0.f, 0.f};
 };
@@ -35,8 +35,8 @@ class ParticleGenerator
 {
   public:
     ParticleGenerator() = default;
-    ParticleGenerator(glm::vec2 velocity,
-                      glm::vec2 position,
+    ParticleGenerator(glm::vec3 velocity,
+                      glm::vec3 position,
                       GLuint texture_id,
                       const unsigned int amount)
         : velocity_(velocity)
@@ -85,13 +85,13 @@ class ParticleGenerator
         // xy -> coordinates
         // zw -> texture coordinates
         // clang-format off
-        float particle_quad[] = {1.0f, 0.f, 1.0f,
-                                 -1.0f, 0.f, -1.0f,
-                                 -1.0f, 0.f, 1.0f,
+        float particle_quad[] = {1.0f, 1.f, 0.0f,
+                                 -1.0f, -1.f, 0.0f,
+                                 -1.0f, 1.f, 0.0f,
 
-                                 1.0f, 0.f, 1.0f,
-                                 1.0f, 0.f, -1.0f,
-                                 -1.0f, 0.f, -1.0f,};
+                                 1.0f, 1.f, 0.0f,
+                                 1.0f, -1.f, 0.0f,
+                                 -1.0f, 1.f, 0.0f,};
         // clang-format on
 
         glGenVertexArrays(1, &VAO_);
@@ -129,7 +129,7 @@ class ParticleGenerator
     }
 
     void respawn(Particle& particle,
-                 const glm::vec2 offset = glm::vec2(0.f, 0.f))
+                 const glm::vec3 offset = glm::vec3(0.f, 0.f, 0.f))
     {
         const float random_pos = ((rand() % 100) - 50) / 10.0f;
         const float color = 0.5f + ((rand() % 100) / 100.0f);
@@ -149,8 +149,8 @@ class ParticleGenerator
     GLuint texture_id_;
 
     // settings generator
-    glm::vec2 velocity_;
-    glm::vec2 position_;
+    glm::vec3 velocity_;
+    glm::vec3 position_;
 };
 
 ParticleGenerator generator;
