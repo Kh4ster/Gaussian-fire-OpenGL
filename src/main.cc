@@ -15,6 +15,7 @@
 #include "shadow_shader.hh"
 #include "light.hh"
 #include "model.hh"
+#include "particle.hh"
 
 void window_resize(int width, int height)
 {
@@ -92,6 +93,11 @@ int main(int argc, char* argv[])
     shadow_shader::init_fbo();
     shadow_shader::init_object_vbo();
 
+    // fire_shader::init_shaders();
+    // ParticleGenerator particle_generator{glm::vec2(1.f, 2.f),
+    // glm::vec2(0.f, 0.f)
+
+    // init_textures();
     glutMainLoop();
     return 0;
 }
