@@ -16,6 +16,7 @@
 #include "light.hh"
 #include "model.hh"
 #include "particle.hh"
+#include "fire_shader.hh"
 
 void window_resize(int width, int height)
 {
@@ -65,6 +66,12 @@ void init_GL()
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 }
 
+void timer(int extra)
+{
+    glutPostRedisplay();
+    glutTimerFunc(30, timer, 0);
+}
+
 int main(int argc, char* argv[])
 {
     init_glut(argc, argv);
@@ -75,10 +82,9 @@ int main(int argc, char* argv[])
     //------- Init Main shader
     main_shader::init_shaders();
 
-    scene::main_model = scene::Model::from_file("obj/cube_plan.obj");
+    scene::main_model = scene::Model::from_file("obj/tmp.obj");
 
     main_shader::init_object_vbo();
-    scene::camera.update_camera();
 
     // x -> front to back
     // y -> top to bottom
@@ -89,15 +95,25 @@ int main(int argc, char* argv[])
     // main_shader::init_textures();
 
     //------- Init shadow shader
-    shadow_shader::init_shaders();
-    shadow_shader::init_fbo();
-    shadow_shader::init_object_vbo();
+    // shadow_shader::init_shaders();
+    // shadow_shader::init_fbo();
+    // shadow_shader::init_object_vbo();
 
-    // fire_shader::init_shaders();
-    // ParticleGenerator particle_generator{glm::vec2(1.f, 2.f),
-    // glm::vec2(0.f, 0.f)
+    //------- Init fire shader
+    TEST_OPENGL_ERROR();
+    fire_shader::init_shaders();
+    TEST_OPENGL_ERROR();
+    GLuint fire_texture = fire_shader::init_texture();
+    TEST_OPENGL_ERROR();
+    fire_shader::init_matrices(scene::camera);
+    TEST_OPENGL_ERROR();
+    particle::generator = particle::ParticleGenerator(glm::vec2(1.f, 2.f),
+                                                      glm::vec2(0.f, 0.f),
+                                                      fire_texture,
+                                                      20);
+    TEST_OPENGL_ERROR();
 
-    // init_textures();
+    glutTimerFunc(0, timer, 0);
     glutMainLoop();
     return 0;
 }

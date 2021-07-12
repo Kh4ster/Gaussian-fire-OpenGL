@@ -1,0 +1,24 @@
+#version 450
+
+// vertex.xy -> coordinates
+// vertex.zw -> Texture coordinates
+in vec4 vertex;
+
+uniform mat4 model_view_matrix;
+uniform mat4 projection_matrix;
+
+uniform vec2 position;
+uniform vec4 color;
+
+// out vec2 tex_coords;
+// out vec4 particle_color;
+
+void main()
+{
+    const float scale = 0.6f;
+    // tex_coords = vertex.zw;
+    // particle_color = color;
+    // gl_Position = projection_matrix * model_view_matrix * vec4((vertex.xy * scale) + position, 0.f, 1.f);
+    vec2 new_position = vertex.xy * scale + position;
+	gl_Position = projection_matrix * model_view_matrix * vec4(new_position.x * scale, 0.f, new_position.y * scale, 1.f);
+}

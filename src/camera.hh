@@ -46,16 +46,16 @@ struct Camera final
         return view;
     };
 
-    void update_camera()
+    void update_camera(GLuint _program_id)
     {
-        GLint loc = glGetUniformLocation(program_id, "model_view_matrix");
+        GLint loc = glGetUniformLocation(_program_id, "model_view_matrix");
         if (loc != -1)
             glUniformMatrix4fv(loc,
                                1,
                                GL_FALSE,
                                glm::value_ptr(get_model_view_matrix()));
 
-        loc = glGetUniformLocation(program_id, "projection_matrix");
+        loc = glGetUniformLocation(_program_id, "projection_matrix");
         if (loc != -1)
             glUniformMatrix4fv(loc,
                                1,

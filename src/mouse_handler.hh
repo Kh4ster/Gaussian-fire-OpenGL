@@ -52,7 +52,6 @@ struct MouseHandler
             last_y = window_center_y;
         }
 
-        scene::camera.update_camera();
         glutPostRedisplay();
     }
 };

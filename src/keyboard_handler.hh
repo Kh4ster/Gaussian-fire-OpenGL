@@ -55,7 +55,6 @@ struct KeyboardHandler
             return;
         }
 
-        scene::camera.update_camera();
         glutPostRedisplay();
     }
 
