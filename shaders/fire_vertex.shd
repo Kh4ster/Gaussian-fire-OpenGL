@@ -1,8 +1,6 @@
 #version 450
 
-// vertex.xy -> coordinates
-// vertex.zw -> Texture coordinates
-in vec4 vertex;
+in vec3 vertex;
 
 uniform mat4 model_view_matrix;
 uniform mat4 projection_matrix;
@@ -19,6 +17,6 @@ void main()
     // tex_coords = vertex.zw;
     // particle_color = color;
     // gl_Position = projection_matrix * model_view_matrix * vec4((vertex.xy * scale) + position, 0.f, 1.f);
-    vec2 new_position = vertex.xy * scale + position;
-	gl_Position = projection_matrix * model_view_matrix * vec4(new_position.x * scale, 0.f, new_position.y * scale, 1.f);
+    vec3 new_position = vertex.xyz * scale + vec3(position.x, 0, position.y);
+	gl_Position = projection_matrix * model_view_matrix * vec4(new_position, 1.f);
 }

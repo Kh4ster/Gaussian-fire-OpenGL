@@ -85,13 +85,13 @@ class ParticleGenerator
         // xy -> coordinates
         // zw -> texture coordinates
         // clang-format off
-        float particle_quad[] = {1.0f, 1.0f, 1.0f, 0.f,
-                                 -1.0f, -1.0f, 0.0f, 0.f,
-                                 -1.0f, 1.0f, 0.0f, 0.f,
+        float particle_quad[] = {1.0f, 0.f, 1.0f,
+                                 -1.0f, 0.f, -1.0f,
+                                 -1.0f, 0.f, 1.0f,
 
-                                 1.0f, 1.0f, 1.0f, 0.f,
-                                 1.0f, -1.0f, 1.0f, 0.f,
-                                 -1.0f, -1.0f, 0.0f, 0.f};
+                                 1.0f, 0.f, 1.0f,
+                                 1.0f, 0.f, -1.0f,
+                                 -1.0f, 0.f, -1.0f,};
         // clang-format on
 
         glGenVertexArrays(1, &VAO_);
@@ -116,10 +116,10 @@ class ParticleGenerator
         TEST_OPENGL_ERROR();
         // set mesh attributes
         glVertexAttribPointer(vertex_location,
-                              4,
+                              3,
                               GL_FLOAT,
                               GL_FALSE,
-                              4 * sizeof(float),
+                              3 * sizeof(float),
                               (void*)0);
         glEnableVertexAttribArray(vertex_location);
         glBindVertexArray(0);
