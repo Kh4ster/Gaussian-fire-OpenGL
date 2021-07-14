@@ -79,7 +79,7 @@ static void render_camera_position()
     TEST_OPENGL_ERROR();
 }
 
-static void render_fire()
+static void render_generator(particle::ParticleGenerator& generator)
 {
     glUseProgram(fire_program_id);
     TEST_OPENGL_ERROR();
@@ -89,13 +89,12 @@ static void render_fire()
     TEST_OPENGL_ERROR();
 
     // Update particles
-    particle::generator.update();
+    generator.update();
 
     // Render every particles one by one
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     TEST_OPENGL_ERROR();
-    for (const particle::Particle& particle :
-         particle::generator.get_particles())
+    for (const particle::Particle& particle : generator.get_particles())
     {
         if (particle.life > 0.0f)
         {
@@ -118,9 +117,10 @@ static void render_fire()
             }
             TEST_OPENGL_ERROR();
 
-            glBindTexture(GL_TEXTURE_2D, particle::generator.get_texture());
+            glBindTexture(GL_TEXTURE_2D,
+                          particle::fire_generator.get_texture());
 
-            glBindVertexArray(particle::generator.get_vao());
+            glBindVertexArray(particle::fire_generator.get_vao());
             glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
             glBindVertexArray(0);
             TEST_OPENGL_ERROR();
@@ -134,7 +134,8 @@ void display()
 {
     // render_shadow();
     render_camera_position();
-    render_fire();
+    render_generator(particle::fire_generator);
+    render_generator(particle::portal_generator);
     glutSwapBuffers();
 }
 } // namespace Renderer
