@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <random>
 
 namespace particle
 {
@@ -85,13 +86,9 @@ class ParticleGenerator
         // xy -> coordinates
         // zw -> texture coordinates
         // clang-format off
-        float particle_quad[] = {1.0f, 1.f, 0.0f,
-                                 -1.0f, -1.f, 0.0f,
-                                 -1.0f, 1.f, 0.0f,
-
-                                 1.0f, 1.f, 0.0f,
-                                 1.0f, -1.f, 0.0f,
-                                 -1.0f, 1.f, 0.0f,};
+        float particle_quad[] = {
+            #include "../obj/cube.nico"
+            };
         // clang-format on
 
         glGenVertexArrays(1, &VAO_);
@@ -131,6 +128,15 @@ class ParticleGenerator
     void respawn(Particle& particle,
                  const glm::vec3 offset = glm::vec3(0.f, 0.f, 0.f))
     {
+        // const float random_life = ((rand() % 4) + Particle::base_life);
+        // const float random_x = distribution(generator);
+        // const float random_y = distribution(generator);
+
+        // particle.position =
+        //    position_ + glm::vec3(random_x, random_y, 1.f) + offset;
+        // particle.velocity = velocity_ * 0.1f;
+        // particle.life = random_life;
+        // particle.color = glm::vec4(1.f, 0.f, 0.f, 1.0f);
         const float random_pos = ((rand() % 100) - 50) / 10.0f;
         const float color = 0.5f + ((rand() % 100) / 100.0f);
 
@@ -151,6 +157,12 @@ class ParticleGenerator
     // settings generator
     glm::vec3 velocity_;
     glm::vec3 position_;
+
+    // random generator
+    // constexpr float mean = 5.0;
+    // constexpr float std = 2.0;
+    // std::default_random_engine generator;
+    // std::normal_distribution<float> distribution(mean, std);
 };
 
 ParticleGenerator generator;

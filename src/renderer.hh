@@ -121,7 +121,7 @@ static void render_fire()
             glBindTexture(GL_TEXTURE_2D, particle::generator.get_texture());
 
             glBindVertexArray(particle::generator.get_vao());
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
             glBindVertexArray(0);
             TEST_OPENGL_ERROR();
         }
