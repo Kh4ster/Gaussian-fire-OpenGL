@@ -107,11 +107,13 @@ int main(int argc, char* argv[])
     TEST_OPENGL_ERROR();
     fire_shader::init_matrices(scene::camera);
     TEST_OPENGL_ERROR();
-    particle::generator =
-        particle::ParticleGenerator(glm::vec3(1.f, 1.f, 1.f), // velocity
-                                    glm::vec3(0.f, 0.f, 0.f), // position
-                                    fire_texture,
-                                    20); // number of particles
+    particle::generator = particle::ParticleGenerator(
+        glm::vec3(0.f, 1.f, 0.f), // velocity
+        glm::vec3(0.f, 0.f, 0.f), // position
+        0.1,                      // speed
+        1000,                     // number of new particles for each update
+        fire_texture,             // particles texture
+        10000);                   // number of particles
     TEST_OPENGL_ERROR();
 
     glutTimerFunc(0, timer, 0);

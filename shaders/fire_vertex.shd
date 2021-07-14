@@ -13,7 +13,7 @@ out vec4 particle_color;
 
 void main()
 {
-    const float scale = 0.3f;
+    const float scale = 0.02f;
     // tex_coords = vertex.zw;
     particle_color = color;
     vec3 new_position = vertex * scale + position;
