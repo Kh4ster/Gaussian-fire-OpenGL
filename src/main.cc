@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
     TEST_OPENGL_ERROR();
     fire_shader::init_shaders();
     TEST_OPENGL_ERROR();
-    GLuint fire_texture = fire_shader::init_texture();
+    // GLuint fire_texture = fire_shader::init_texture();
     TEST_OPENGL_ERROR();
     fire_shader::init_matrices(scene::camera);
     TEST_OPENGL_ERROR();
@@ -113,7 +113,6 @@ int main(int argc, char* argv[])
         glm::vec3(0.f, 0.f, 0.f), // position
         0.1,                      // speed
         1000,                     // number of new particles for each update
-        fire_texture,             // particles texture
         10000);                   // number of particles
     TEST_OPENGL_ERROR();
 

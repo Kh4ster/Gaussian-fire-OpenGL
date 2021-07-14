@@ -43,13 +43,11 @@ class ParticleGenerator
                       const glm::vec3& position,
                       const float speed,
                       const unsigned int nb_new_particles,
-                      GLuint texture_id,
                       const unsigned int amount)
         : direction_(direction)
         , position_(position)
         , speed_(speed)
         , nb_new_particles_(nb_new_particles)
-        , texture_id_(texture_id)
     {
         this->init(amount);
     }
@@ -86,8 +84,6 @@ class ParticleGenerator
     }
 
     GLuint get_vao() const { return VAO_; }
-
-    GLuint get_texture() const { return texture_id_; }
 
     const std::vector<Particle>& get_particles() const { return particles_; }
 
@@ -162,7 +158,6 @@ class ParticleGenerator
 
     // opengl variables
     GLuint VAO_;
-    GLuint texture_id_;
 
     // settings generator
     glm::vec3 direction_;
