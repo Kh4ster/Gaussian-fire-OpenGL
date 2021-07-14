@@ -77,10 +77,10 @@ class ParticleGenerator
             if (particle.life > 0.f)
             {
                 particle.position += particle.direction * particle.speed;
-                const float new_color =
-                    std::max(particle.color.x - 0.05f, 0.5f);
+                const float new_color_g =
+                    std::max(particle.color.g - 0.07f, 0.0f);
                 particle.color =
-                    glm::vec4(new_color, new_color, new_color, 1.f);
+                    glm::vec4(particle.color.r, new_color_g, 0.f, 1.f);
             }
         }
     }
@@ -153,7 +153,7 @@ class ParticleGenerator
         particle.direction = direction_; // + noise?
         particle.speed = speed_ + noise;
         particle.life = random_life;
-        particle.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f); // hardcoded so far
+        particle.color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f); // hardcoded so far
     }
 
   private:

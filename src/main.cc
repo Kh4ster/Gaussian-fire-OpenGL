@@ -82,14 +82,15 @@ int main(int argc, char* argv[])
     //------- Init Main shader
     main_shader::init_shaders();
 
-    scene::main_model = scene::Model::from_file("obj/plane.obj");
+    scene::main_model = scene::Model::from_file("obj/plane_base.obj");
 
     main_shader::init_object_vbo();
 
     // x -> front to back
     // y -> top to bottom
     // z -> left to right
-    const glm::vec3 light_origin = {-3.0, 5.0, -3.0};
+    // const glm::vec3 light_origin = {-3.0, 5.0, -3.0};
+    const glm::vec3 light_origin = {-0.0, 1.0, -0.0};
     scene::main_light = scene::Light(light_origin, 3.f);
     main_shader::init_lights();
     // main_shader::init_textures();
