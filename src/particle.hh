@@ -95,8 +95,9 @@ class ParticleGenerator
     void init(const unsigned int nb_particles)
     {
         // clang-format off
-        float particle_quad[] = {
-            #include "../obj/cube.nico"
+        // Vertex vertices
+        float cube_vertices[] = {
+            #include "../obj/cube.vertex"
         };
         // clang-format on
 
@@ -105,19 +106,19 @@ class ParticleGenerator
         glBindVertexArray(VAO_);
         TEST_OPENGL_ERROR();
 
-        GLuint vbo_id;
-        glGenBuffers(1, &vbo_id);
+        GLuint vbo_ids[1];
+        glGenBuffers(1, vbo_ids);
         TEST_OPENGL_ERROR();
 
         GLint vertex_location = glGetAttribLocation(fire_program_id, "vertex");
         TEST_OPENGL_ERROR();
 
         // fill mesh buffer
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_ids[0]);
         TEST_OPENGL_ERROR();
         glBufferData(GL_ARRAY_BUFFER,
-                     sizeof(particle_quad),
-                     particle_quad,
+                     sizeof(cube_vertices),
+                     cube_vertices,
                      GL_STATIC_DRAW);
         TEST_OPENGL_ERROR();
         // set mesh attributes
@@ -131,6 +132,7 @@ class ParticleGenerator
         glBindVertexArray(0);
         TEST_OPENGL_ERROR();
 
+        // Create dead particles
         particles_ = std::vector<Particle>(nb_particles);
     }
 

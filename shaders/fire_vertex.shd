@@ -8,13 +8,11 @@ uniform mat4 projection_matrix;
 uniform vec3 position;
 uniform vec4 color;
 
-// out vec2 tex_coords;
 out vec4 particle_color;
 
 void main()
 {
     const float scale = 0.02f;
-    // tex_coords = vertex.zw;
     particle_color = color;
     vec3 new_position = vertex * scale + position;
 	gl_Position = projection_matrix * model_view_matrix * vec4(new_position, 1.f);
