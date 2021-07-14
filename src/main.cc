@@ -87,14 +87,29 @@ int main(int argc, char* argv[])
     scene::Light main_light = scene::Light({10.0, 1.0, 0.0}, 2.f);
     scene::lights.add_light(main_light);
 
-    particle::generator = particle::ParticleGenerator(
-        glm::vec3(0.f, 1.f, 0.f), // velocity
-        glm::vec3(0.f, 0.f, 0.f), // position
-        0.1,                      // speed
-        1000,                     // number of new particles for each update
-        10000);                   // number of particles
     const scene::Light fire_light = scene::Light({0.0f, 0.5f, 0.f}, 4.f);
     scene::lights.add_light(fire_light);
+    particle::fire_generator = particle::ParticleGenerator(
+        glm::vec3(0.f, 1.f, 0.f),          // velocity
+        glm::vec3(0.f, 0.f, 0.f),          // position
+        glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // color
+        0.1,                               // speed
+        1000,   // number of new particles for each update
+        10000); // number of particles
+
+    particle::portal_generator_A = particle::ParticleGenerator(
+        glm::vec3(0.f, 1.f, 0.f),          // velocity
+        glm::vec3(3.f, 0.f, 0.f),          // position
+        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), // color
+        0.1,                               // speed
+        100,   // number of new particles for each update
+        1000,  // number of particles
+        true,  // display in a circle
+        false, // color attenuation
+        20.f); // base life
+
+    particle::portal_generator_B = particle::portal_generator_A;
+    particle::portal_generator_B.set_position(glm::vec3(10.f, 0.f, 0.f));
 
     scene::main_model = scene::Model::from_file("obj/plane_base.obj");
 

@@ -32,7 +32,7 @@ struct Particle
     float life = 0.f;
     glm::vec4 color = {1.f, 0.f, 0.f, 0.f};
 
-    static constexpr float base_life = 5.f;
+    float base_life_ = 5.f;
 };
 
 class ParticleGenerator
@@ -41,13 +41,21 @@ class ParticleGenerator
     ParticleGenerator() = default;
     ParticleGenerator(const glm::vec3& direction,
                       const glm::vec3& position,
+                      const glm::vec4& color,
                       const float speed,
                       const unsigned int nb_new_particles,
-                      const unsigned int amount)
+                      const unsigned int amount,
+                      const bool circle = false,
+                      const bool color_attenuation = true,
+                      const float base_life = 5.f)
         : direction_(direction)
         , position_(position)
+        , color_(color)
         , speed_(speed)
         , nb_new_particles_(nb_new_particles)
+        , circle_(circle)
+        , color_attenuation_(color_attenuation)
+        , base_life_(base_life)
     {
         this->init(amount);
     }
@@ -75,13 +83,28 @@ class ParticleGenerator
             if (particle.life > 0.f)
             {
                 particle.position += particle.direction * particle.speed;
-                const float new_color_g =
-                    std::max(particle.color.g - 0.07f, 0.0f);
-                particle.color =
-                    glm::vec4(particle.color.r, new_color_g, 0.f, 1.f);
+                if (color_attenuation_)
+                {
+                    const float new_color_g =
+                        std::max(particle.color.g - 0.07f, 0.0f);
+                    particle.color =
+                        glm::vec4(particle.color.r, new_color_g, 0.f, 1.f);
+                }
+                else
+                    particle.color = color_;
             }
         }
     }
+
+    void set_position(const glm::vec3 position) { position_ = position; }
+
+    void activate()
+    {
+        speed_ += 0.005f;
+        color_ += 0.005f;
+    }
+
+    glm::vec3 get_position() const { return position_; }
 
     const std::vector<Particle>& get_particles() const { return particles_; }
 
@@ -95,10 +118,13 @@ class ParticleGenerator
     void respawn(Particle& particle,
                  const glm::vec3 offset = glm::vec3(0.f, 0.f, 0.f))
     {
-        const float random_life =
-            life_distribution_(rnd_engine_) + Particle::base_life;
+        const float random_life = life_distribution_(rnd_engine_) + base_life_;
 
-        const float random_r = pos_distribution_(rnd_engine_);
+        float random_r;
+        if (circle_)
+            random_r = 1.f;
+        else
+            random_r = pos_distribution_(rnd_engine_);
         const float random_teta = (rand() % 100) / 100.f * 2 * M_PI;
         const float random_x = random_r * std::cos(random_teta);
         const float random_z = random_r * std::sin(random_teta);
@@ -109,7 +135,7 @@ class ParticleGenerator
         particle.direction = direction_; // + noise?
         particle.speed = speed_ + noise;
         particle.life = random_life;
-        particle.color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f); // hardcoded so far
+        particle.color = color_;
     }
 
   private:
@@ -121,6 +147,10 @@ class ParticleGenerator
     float speed_;
     glm::vec3 position_;
     unsigned int nb_new_particles_; // new particle to spawn at every update
+    glm::vec4 color_;
+    bool circle_;
+    bool color_attenuation_;
+    float base_life_;
 
     // random generators
     // Position generator
@@ -139,5 +169,8 @@ class ParticleGenerator
     std::default_random_engine rnd_engine_;
 };
 
-ParticleGenerator generator;
+ParticleGenerator fire_generator;
+ParticleGenerator portal_generator_A;
+ParticleGenerator portal_generator_B;
+
 } // namespace particle
