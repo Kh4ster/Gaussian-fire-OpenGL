@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
         fire_texture, // particles texture
         10000);       // number of particles
     TEST_OPENGL_ERROR();
-    particle::portal_generator = particle::ParticleGenerator(
+    particle::portal_generator_A = particle::ParticleGenerator(
         glm::vec3(0.f, 1.f, 0.f), // velocity
         glm::vec3(3.f, 0.f, 0.f), // position
         glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
@@ -128,6 +128,10 @@ int main(int argc, char* argv[])
         true,         // display in a circle
         false,        // color attenuation
         20.f);        // base life
+
+    particle::portal_generator_B = particle::portal_generator_A;
+    particle::portal_generator_B.set_position(glm::vec3(10.f, 0.f, 0.f));
+
     TEST_OPENGL_ERROR();
 
     glutTimerFunc(0, timer, 0);

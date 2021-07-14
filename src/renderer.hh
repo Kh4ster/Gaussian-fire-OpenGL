@@ -130,12 +130,36 @@ static void render_generator(particle::ParticleGenerator& generator)
     TEST_OPENGL_ERROR();
 }
 
+void teleport()
+{
+    static int entering_zone = false;
+    if (std::abs(scene::camera.origin_[0] -
+                 particle::portal_generator_A.get_position()[0]) < 1.f &&
+        std::abs(scene::camera.origin_[2] -
+                 particle::portal_generator_A.get_position()[2]) < 1.f)
+    {
+        if (entering_zone < 200)
+        {
+            ++entering_zone;
+            particle::portal_generator_A.activate();
+        }
+        else if (entering_zone == 200)
+        {
+            auto vect = particle::portal_generator_B.get_position();
+            vect[1] = scene::camera.origin_[1];
+            scene::camera.origin_ = vect;
+        }
+    }
+}
+
 void display()
 {
     // render_shadow();
+    teleport();
     render_camera_position();
     render_generator(particle::fire_generator);
-    render_generator(particle::portal_generator);
+    render_generator(particle::portal_generator_A);
+    render_generator(particle::portal_generator_B);
     glutSwapBuffers();
 }
 } // namespace Renderer

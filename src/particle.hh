@@ -98,9 +98,19 @@ class ParticleGenerator
         }
     }
 
+    void set_position(const glm::vec3 position) { position_ = position; }
+
     GLuint get_vao() const { return VAO_; }
 
     GLuint get_texture() const { return texture_id_; }
+
+    void activate()
+    {
+        speed_ += 0.005f;
+        color_ += 0.005f;
+    }
+
+    glm::vec3 get_position() const { return position_; }
 
     const std::vector<Particle>& get_particles() const { return particles_; }
 
@@ -208,6 +218,7 @@ class ParticleGenerator
 };
 
 ParticleGenerator fire_generator;
-ParticleGenerator portal_generator;
+ParticleGenerator portal_generator_A;
+ParticleGenerator portal_generator_B;
 
 } // namespace particle
