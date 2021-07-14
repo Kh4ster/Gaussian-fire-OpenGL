@@ -78,6 +78,9 @@ static void render_generator(particle::ParticleGenerator& generator)
                             particle.color[3]);
             }
             TEST_OPENGL_ERROR();
+            loc = glGetUniformLocation(fire_program_id, "scale");
+            if (loc != -1)
+                glUniform1f(loc, generator.scale_get());
 
             glBindVertexArray(fire_vao);
             glDrawArrays(GL_TRIANGLES, 0, 12 * 3);

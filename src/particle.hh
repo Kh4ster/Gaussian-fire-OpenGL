@@ -45,6 +45,7 @@ class ParticleGenerator
                       const float speed,
                       const unsigned int nb_new_particles,
                       const unsigned int amount,
+                      const float scale,
                       const bool circle = false,
                       const bool color_attenuation = true,
                       const float base_life = 5.f)
@@ -53,6 +54,7 @@ class ParticleGenerator
         , color_(color)
         , speed_(speed)
         , nb_new_particles_(nb_new_particles)
+        , scale_(scale)
         , circle_(circle)
         , color_attenuation_(color_attenuation)
         , base_life_(base_life)
@@ -62,20 +64,6 @@ class ParticleGenerator
 
     void update()
     {
-        // Find dead particles
-        // Respawn the given number of particles
-        unsigned int respawned_particle = 0;
-        for (Particle& particle : particles_)
-        {
-            if (particle.life <= 0.f)
-            {
-                respawn(particle);
-                respawned_particle++;
-                if (respawned_particle == nb_new_particles_)
-                    break;
-            }
-        }
-
         // Update all particles
         for (Particle& particle : particles_)
         {
@@ -94,6 +82,20 @@ class ParticleGenerator
                     particle.color = color_;
             }
         }
+
+        // Find dead particles
+        // Respawn the given number of particles
+        unsigned int respawned_particle = 0;
+        for (Particle& particle : particles_)
+        {
+            if (particle.life <= 0.f)
+            {
+                respawn(particle);
+                respawned_particle++;
+                if (respawned_particle == nb_new_particles_)
+                    break;
+            }
+        }
     }
 
     void set_position(const glm::vec3 position) { position_ = position; }
@@ -102,11 +104,14 @@ class ParticleGenerator
     {
         speed_ += 0.005f;
         color_ += 0.005f;
+        // scale_ += 0.0005f;
     }
 
     glm::vec3 get_position() const { return position_; }
 
     const std::vector<Particle>& get_particles() const { return particles_; }
+
+    float scale_get() const { return scale_; }
 
   private:
     void init(const unsigned int nb_particles)
@@ -147,6 +152,7 @@ class ParticleGenerator
     float speed_;
     glm::vec3 position_;
     unsigned int nb_new_particles_; // new particle to spawn at every update
+    float scale_;
     glm::vec4 color_;
     bool circle_;
     bool color_attenuation_;
