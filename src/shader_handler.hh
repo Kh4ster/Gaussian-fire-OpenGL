@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 #define TEST_OPENGL_ERROR()                                                    \
     do                                                                         \

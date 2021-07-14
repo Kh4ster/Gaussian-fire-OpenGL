@@ -7,18 +7,23 @@
 
 layout(location=0) out vec4 output_color;
 
-uniform float strength_light;
+#define MAX_LIGHTS 30
+uniform float strength_light[MAX_LIGHTS];
+uniform int nb_lights;
 
-// in vec4 gl_FragCoord;
 in vec3 ocolor;
 in vec3 onormal;
-in vec3 light_dir;
-// in vec2 ouv;
+in vec3 light_dir[MAX_LIGHTS];
 
 void main() {
-    // output_color = vec4(ocolor, 1.f) + (texture2D(normalmap_sampler, ouv) * 2 - 1);
-    float len_to_light = length(light_dir);
-    float distance_factor = clamp(1 / len_to_light * strength_light, 0.f, 1.f);
-    vec3 computed_color = dot(onormal, normalize(light_dir)) * ocolor * distance_factor;
-    output_color = vec4(clamp(computed_color, 0.f, 1.f), 1.f);
+    output_color = vec4(0.f, 0.f, 0.f, 1.f);
+
+    for (int i = 0; i < nb_lights; i++)
+    {
+        float len_to_light = length(light_dir[i]);
+        float distance_factor = clamp(1 / len_to_light * strength_light[i], 0.f, 1.f);
+        vec3 computed_color = dot(onormal, normalize(light_dir[i])) * ocolor * distance_factor;
+        output_color.rgb += clamp(computed_color, 0.f, 1.f).rgb;
+        output_color = clamp(output_color, 0.f, 1.f);
+    }
 }

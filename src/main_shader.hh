@@ -6,7 +6,6 @@
 #include "model.hh"
 #include "light.hh"
 #include "program_propreties.hh"
-#include "shader_handler.hh"
 
 namespace main_shader
 {
@@ -281,12 +280,16 @@ void init_textures()
 void init_lights()
 {
     GLint loc = glGetUniformLocation(program_id, "light_position");
-    const glm::vec3& origin = scene::main_light.origin_;
     if (loc != -1)
-        glUniform3f(loc, origin[0], origin[1], origin[2]);
+        glUniform3fv(loc,
+                     scene::lights.size(),
+                     glm::value_ptr(scene::lights.origins_get()[0]));
     loc = glGetUniformLocation(program_id, "strength_light");
     if (loc != -1)
-        glUniform1f(loc, scene::main_light.strength_);
+        glUniform1fv(loc, scene::lights.size(), scene::lights.strengths_get());
+    loc = glGetUniformLocation(program_id, "nb_lights");
+    if (loc != -1)
+        glUniform1i(loc, scene::lights.size());
 }
 
 bool init_shaders()

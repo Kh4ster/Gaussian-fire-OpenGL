@@ -83,51 +83,11 @@ class ParticleGenerator
         }
     }
 
-    GLuint get_vao() const { return VAO_; }
-
     const std::vector<Particle>& get_particles() const { return particles_; }
 
   private:
     void init(const unsigned int nb_particles)
     {
-        // clang-format off
-        // Vertex vertices
-        float cube_vertices[] = {
-            #include "../obj/cube.vertex"
-        };
-        // clang-format on
-
-        glGenVertexArrays(1, &VAO_);
-        TEST_OPENGL_ERROR();
-        glBindVertexArray(VAO_);
-        TEST_OPENGL_ERROR();
-
-        GLuint vbo_ids[1];
-        glGenBuffers(1, vbo_ids);
-        TEST_OPENGL_ERROR();
-
-        GLint vertex_location = glGetAttribLocation(fire_program_id, "vertex");
-        TEST_OPENGL_ERROR();
-
-        // fill mesh buffer
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_ids[0]);
-        TEST_OPENGL_ERROR();
-        glBufferData(GL_ARRAY_BUFFER,
-                     sizeof(cube_vertices),
-                     cube_vertices,
-                     GL_STATIC_DRAW);
-        TEST_OPENGL_ERROR();
-        // set mesh attributes
-        glVertexAttribPointer(vertex_location,
-                              3,
-                              GL_FLOAT,
-                              GL_FALSE,
-                              3 * sizeof(float),
-                              (void*)0);
-        glEnableVertexAttribArray(vertex_location);
-        glBindVertexArray(0);
-        TEST_OPENGL_ERROR();
-
         // Create dead particles
         particles_ = std::vector<Particle>(nb_particles);
     }
@@ -155,9 +115,6 @@ class ParticleGenerator
   private:
     // state
     std::vector<Particle> particles_;
-
-    // opengl variables
-    GLuint VAO_;
 
     // settings generator
     glm::vec3 direction_;

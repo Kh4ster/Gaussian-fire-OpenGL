@@ -12,11 +12,11 @@
 #include "keyboard_handler.hh"
 #include "renderer.hh"
 #include "main_shader.hh"
-#include "shadow_shader.hh"
 #include "light.hh"
 #include "model.hh"
 #include "particle.hh"
 #include "fire_shader.hh"
+#include "shader_handler.hh"
 
 void window_resize(int width, int height)
 {
@@ -79,41 +79,40 @@ int main(int argc, char* argv[])
         std::exit(-1);
     init_GL();
 
-    //------- Init Main shader
-    main_shader::init_shaders();
-
-    scene::main_model = scene::Model::from_file("obj/plane_base.obj");
-
-    main_shader::init_object_vbo();
+    //------- Scene settings
 
     // x -> front to back
     // y -> top to bottom
     // z -> left to right
-    // const glm::vec3 light_origin = {-3.0, 5.0, -3.0};
-    const glm::vec3 light_origin = {-0.0, 1.0, -0.0};
-    scene::main_light = scene::Light(light_origin, 3.f);
-    main_shader::init_lights();
-    // main_shader::init_textures();
+    scene::Light main_light = scene::Light({10.0, 1.0, 0.0}, 2.f);
+    scene::lights.add_light(main_light);
 
-    //------- Init shadow shader
-    // shadow_shader::init_shaders();
-    // shadow_shader::init_fbo();
-    // shadow_shader::init_object_vbo();
-
-    //------- Init fire shader
-    TEST_OPENGL_ERROR();
-    fire_shader::init_shaders();
-    TEST_OPENGL_ERROR();
-    // GLuint fire_texture = fire_shader::init_texture();
-    TEST_OPENGL_ERROR();
-    fire_shader::init_matrices(scene::camera);
-    TEST_OPENGL_ERROR();
     particle::generator = particle::ParticleGenerator(
         glm::vec3(0.f, 1.f, 0.f), // velocity
         glm::vec3(0.f, 0.f, 0.f), // position
         0.1,                      // speed
         1000,                     // number of new particles for each update
         10000);                   // number of particles
+    const scene::Light fire_light = scene::Light({0.0f, 0.5f, 0.f}, 4.f);
+    scene::lights.add_light(fire_light);
+
+    scene::main_model = scene::Model::from_file("obj/plane_base.obj");
+
+    //------- Init Main shader
+    main_shader::init_shaders();
+    TEST_OPENGL_ERROR();
+    main_shader::init_object_vbo();
+    TEST_OPENGL_ERROR();
+    main_shader::init_lights();
+    // main_shader::init_textures();
+
+    //------- Init fire shader
+    TEST_OPENGL_ERROR();
+    fire_shader::init_shaders();
+    TEST_OPENGL_ERROR();
+    fire_shader::init_matrices(scene::camera);
+    TEST_OPENGL_ERROR();
+    fire_shader::init_cube_generator();
     TEST_OPENGL_ERROR();
 
     glutTimerFunc(0, timer, 0);

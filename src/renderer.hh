@@ -7,10 +7,10 @@
 #include "program_propreties.hh"
 #include "object_vbo.hh"
 #include "camera.hh"
-#include "shader_handler.hh"
 #include "model.hh"
 #include "light.hh"
 #include "particle.hh"
+#include "shader_handler.hh"
 
 namespace Renderer
 {
@@ -80,7 +80,7 @@ static void render_fire()
             }
             TEST_OPENGL_ERROR();
 
-            glBindVertexArray(particle::generator.get_vao());
+            glBindVertexArray(fire_vao);
             glDrawArrays(GL_TRIANGLES, 0, 12 * 3);
             glBindVertexArray(0);
             TEST_OPENGL_ERROR();

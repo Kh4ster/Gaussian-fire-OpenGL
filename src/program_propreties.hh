@@ -12,13 +12,8 @@ constexpr int window_height = 1024;
 constexpr int window_center_x = 1024 / 2;
 constexpr int window_center_y = 1024 / 2;
 
-// Shadow shader
-GLuint shadow_program_id;
-GLuint model_shadow_vao_id; // probably useless and use only one vao
-GLuint depth_map_FBO;
-GLuint depth_map;
-
 constexpr unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
 // Fire shader
 GLuint fire_program_id;
+GLuint fire_vao;

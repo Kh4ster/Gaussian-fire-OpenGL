@@ -2,28 +2,28 @@
 
 in vec3 position;
 in vec3 normal;
-// in vec3 normalFlat;
-// in vec3 normalSmooth;
-// in vec3 color;
-// UV is the position of the vertex inside the théière écrasé en 2D
-// in vec2 uv;
 
 // model_view_matrix: 3D world axis to 3D camera axis
 // projection_matrix: 3D camera axis to 2D screen axis
 uniform mat4 model_view_matrix;
 uniform mat4 projection_matrix;
 
-uniform vec3 light_position;
+#define MAX_LIGHTS 30
+uniform vec3 light_position[MAX_LIGHTS];
+uniform int nb_lights;
+
+
+out vec3 light_dir[MAX_LIGHTS];
 
 out vec3 ocolor;
 out vec3 onormal;
-out vec3 light_dir;
-// out vec2 ouv;
 
 void main() {
-	gl_Position = projection_matrix * model_view_matrix * vec4(position, 1.f);
-	ocolor = vec3(1.0, 0.0, 0.0);
-	onormal = normal;
-	light_dir = light_position - position;
-	// ouv = vec2(1.0, 1.0);
+    gl_Position = projection_matrix * model_view_matrix * vec4(position, 1.f);
+    ocolor = vec3(1.0, 0.0, 0.0);
+    onormal = normal;
+    for (int i = 0; i < nb_lights; i++)
+    {
+        light_dir[i] = light_position[i] - position;
+    }
 }
