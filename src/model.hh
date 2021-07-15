@@ -31,22 +31,35 @@ class Model
 
     static Model from_file(const std::string& path);
 
-    // Size is the same for vertices and normals
-    std::size_t size() const
-    {
-        assert(normals_.size() == vertices_.size());
-        return vertices_.size() * sizeof(Triangle<glm::vec3>);
-    }
-
     glm::vec3* const get_vertices()
     {
         return reinterpret_cast<glm::vec3*>(vertices_.data());
     };
 
+    std::size_t size_vertices()
+    {
+        return vertices_.size() * sizeof(Triangle<glm::vec3>);
+    }
+
     glm::vec3* const get_normals()
     {
         return reinterpret_cast<glm::vec3*>(normals_.data());
     };
+
+    std::size_t size_normals()
+    {
+        return normals_.size() * sizeof(Triangle<glm::vec3>);
+    }
+
+    glm::vec2* const get_textures()
+    {
+        return reinterpret_cast<glm::vec2*>(textures_.data());
+    }
+
+    std::size_t size_textures()
+    {
+        return textures_.size() * sizeof(Triangle<glm::vec2>);
+    }
 
   private:
     std::vector<Triangle<glm::vec3>> vertices_;

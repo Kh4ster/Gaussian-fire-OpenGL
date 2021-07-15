@@ -17,9 +17,10 @@ namespace Renderer
 
 static void render_scene(GLuint model_vao)
 {
+    glBindTexture(GL_TEXTURE_2D, texture_id);
     glBindVertexArray(model_vao);
     TEST_OPENGL_ERROR();
-    glDrawArrays(GL_TRIANGLES, 0, scene::main_model.size());
+    glDrawArrays(GL_TRIANGLES, 0, scene::main_model.size_vertices());
     TEST_OPENGL_ERROR();
     glBindVertexArray(0);
     TEST_OPENGL_ERROR();
@@ -119,6 +120,7 @@ void display()
     teleport();
     render_camera_position();
     render_generator(particle::fire_generator);
+    render_generator(particle::fire_generator2);
     render_generator(particle::portal_generator_A);
     render_generator(particle::portal_generator_B);
     glutSwapBuffers();

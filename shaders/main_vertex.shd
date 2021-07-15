@@ -2,6 +2,7 @@
 
 in vec3 position;
 in vec3 normal;
+in vec2 tex_coord;
 
 // model_view_matrix: 3D world axis to 3D camera axis
 // projection_matrix: 3D camera axis to 2D screen axis
@@ -15,13 +16,13 @@ uniform int nb_lights;
 
 out vec3 light_dir[MAX_LIGHTS];
 
-out vec3 ocolor;
 out vec3 onormal;
+out vec2 otex_coord;
 
 void main() {
     gl_Position = projection_matrix * model_view_matrix * vec4(position, 1.f);
-    ocolor = vec3(1.0, 0.0, 0.0);
     onormal = normal;
+    otex_coord = tex_coord;
     for (int i = 0; i < nb_lights; i++)
     {
         light_dir[i] = light_position[i] - position;

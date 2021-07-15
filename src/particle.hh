@@ -176,6 +176,7 @@ class ParticleGenerator
 };
 
 ParticleGenerator fire_generator;
+ParticleGenerator fire_generator2;
 ParticleGenerator portal_generator_A;
 ParticleGenerator portal_generator_B;
 

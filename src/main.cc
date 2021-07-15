@@ -84,17 +84,31 @@ int main(int argc, char* argv[])
     // x -> front to back
     // y -> top to bottom
     // z -> left to right
-    // scene::Light main_light = scene::Light({10.0, 1.0, 0.0}, 2.f);
+    // scene::Light main_light = scene::Light({0.0, 10.0, 0.0}, 5.f);
     // scene::lights.add_light(main_light);
     const glm::vec3 delta_light{0.f, 0.5f, 0.f};
     // Fire
-    const glm::vec3 fire_origin{6.5f, 0.0f, 0.f};
+    const glm::vec3 fire_origin{18.f, 0.75f, 4.f};
     const scene::Light fire_light =
         scene::Light(fire_origin + delta_light, 4.f);
     scene::lights.add_light(fire_light);
     particle::fire_generator = particle::ParticleGenerator(
         glm::vec3(0.f, 1.f, 0.f),          // velocity
         fire_origin,                       // origin
+        glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // color
+        0.1,                               // speed
+        1000,   // number of new particles for each update
+        10000,  // number of particles
+        0.02f); // scale
+
+    // Fire 2
+    const glm::vec3 fire_origin2{18.f, 0.75f, -4.f};
+    const scene::Light fire_light2 =
+        scene::Light(fire_origin2 + delta_light, 4.f);
+    scene::lights.add_light(fire_light2);
+    particle::fire_generator2 = particle::ParticleGenerator(
+        glm::vec3(0.f, 1.f, 0.f),          // velocity
+        fire_origin2,                      // origin
         glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // color
         0.1,                               // speed
         1000,   // number of new particles for each update
@@ -116,12 +130,12 @@ int main(int argc, char* argv[])
         false, // color attenuation
         20.f); // base life
 
-    const glm::vec3 portalB_origin{10.f, 0.f, 0.f};
+    const glm::vec3 portalB_origin{18.f, 0.f, 0.f};
     particle::portal_generator_B = particle::portal_generator_A;
     scene::lights.add_light({portalB_origin + delta_light, 0.5f});
     particle::portal_generator_B.set_position(portalB_origin);
 
-    scene::main_model = scene::Model::from_file("obj/plane_base.obj");
+    scene::main_model = scene::Model::from_file("obj/try.obj");
 
     //------- Init Main shader
     main_shader::init_shaders();
@@ -129,7 +143,7 @@ int main(int argc, char* argv[])
     main_shader::init_object_vbo();
     TEST_OPENGL_ERROR();
     main_shader::init_lights();
-    // main_shader::init_textures();
+    main_shader::init_textures();
 
     //------- Init fire shader
     TEST_OPENGL_ERROR();
