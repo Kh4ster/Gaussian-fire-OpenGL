@@ -9,7 +9,7 @@ scene::lights.add_light(behind_light);
 
 const glm::vec3 delta_light{0.f, 0.5f, 0.f};
 // Fire
-const glm::vec3 fire_origin{10.f, 0.f, 0.f};
+const glm::vec3 fire_origin{10.f, 80.f, 0.f};
 const scene::Light fire_light =
     scene::Light(fire_origin + delta_light, 4.f);
 scene::lights.add_light(fire_light);
@@ -23,7 +23,23 @@ particle::fire_generator = particle::ParticleGenerator(
     0.05f,  // scale
     false,
     true,
-    100.f);
+    100.f,
+    4.f, // standard deviation for position distribution
+    0.01f); // life attenuation
+
+// Fire 2
+const glm::vec3 fire_origin2{18.f, 0.75f, 0.f};
+const scene::Light fire_light2 =
+    scene::Light(fire_origin2 + delta_light, 4.f);
+scene::lights.add_light(fire_light2);
+particle::fire_generator2 = particle::ParticleGenerator(
+    glm::vec3(0.f, 1.f, 0.f),          // velocity
+    fire_origin2,                      // origin
+    glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // color
+    0.1,                               // speed
+    1000,   // number of new particles for each update
+    10000,  // number of particles
+    0.02f); // scale
 
 // Portal A
 const glm::vec3 portalA_origin{3.f, 0.f, 0.f};
@@ -40,9 +56,14 @@ particle::portal_generator_A = particle::ParticleGenerator(
     false, // color attenuation
     20.f); // base life
 
-const glm::vec3 portalB_origin{18.f, 0.75f, 0.f};
+scene::Light main_light2 = scene::Light({0.0, 90.0, 0.0}, 5.f);
+scene::lights.add_light(main_light2);
+scene::Light behind_light2 = scene::Light({-10.f, 85.f, 0.f}, 2.f);
+scene::lights.add_light(behind_light2);
+
+const glm::vec3 portalB_origin{3.f, 80.f, 0.f};
 particle::portal_generator_B = particle::portal_generator_A;
 scene::lights.add_light({portalB_origin + delta_light, 0.5f});
 particle::portal_generator_B.set_position(portalB_origin);
 
-scene::main_model = scene::Model::from_file("obj/main.obj");
+scene::main_model = scene::Model::from_file("obj/main_two_models.obj");

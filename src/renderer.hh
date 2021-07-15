@@ -108,8 +108,9 @@ void teleport()
         }
         else if (entering_zone == 200)
         {
+            entering_zone++;
             auto vect = particle::portal_generator_B.get_position();
-            vect[1] = scene::camera.origin_[1];
+            vect[1] += 2;
             scene::camera.origin_ = vect;
         }
     }

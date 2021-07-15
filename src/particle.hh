@@ -48,7 +48,9 @@ class ParticleGenerator
                       const float scale,
                       const bool circle = false,
                       const bool color_attenuation = true,
-                      const float base_life = 5.f)
+                      const float base_life = 5.f,
+                      const float pos_std = 0.25f,
+                      const float life_attenuation = 0.07f)
         : direction_(direction)
         , position_(position)
         , color_(color)
@@ -58,6 +60,9 @@ class ParticleGenerator
         , circle_(circle)
         , color_attenuation_(color_attenuation)
         , base_life_(base_life)
+        , pos_std_(pos_std)
+        , pos_distribution_(pos_mean_, pos_std_)
+        , life_attenuation_(life_attenuation)
     {
         this->init(amount);
     }
@@ -74,7 +79,7 @@ class ParticleGenerator
                 if (color_attenuation_)
                 {
                     const float new_color_g =
-                        std::max(particle.color.g - 0.07f, 0.0f);
+                        std::max(particle.color.g - life_attenuation_, 0.0f);
                     particle.color =
                         glm::vec4(particle.color.r, new_color_g, 0.f, 1.f);
                 }
@@ -157,11 +162,12 @@ class ParticleGenerator
     bool circle_;
     bool color_attenuation_;
     float base_life_;
+    float life_attenuation_;
 
     // random generators
     // Position generator
     static constexpr float pos_mean_ = 0.f;
-    static constexpr float pos_std_ = 0.25f;
+    float pos_std_ = 0.25f;
     std::normal_distribution<float> pos_distribution_{pos_mean_, pos_std_};
 
     // Life generator
