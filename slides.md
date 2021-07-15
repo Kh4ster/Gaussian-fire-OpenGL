@@ -104,15 +104,26 @@ vec3 computed_color = dot(onormal, normalize(light_dir[i])) * texture(texture_sa
 
 ---
 
-## Generator
+### Update particles
 
-```C++
+* Update particles' positions
+* Update particles' life
+* Update particles' color
+
+```c++
 for (Particle& particle : particles_)
     particle.life -= life_diminution;
     if (particle.is_alive())
         particle.position += particle.direction * particle.speed
         particle.color -=  color_attenuation_
+```
 
+
+---
+
+### Generator
+
+```C++
 // Find dead particles
 // Respawn the given number of particles
 for (Particle& particle : particles_)
@@ -124,7 +135,11 @@ for (Particle& particle : particles_)
 ```
 ---
 
-### Gaussian fire
+## Gaussian fire
+
+
+![center](http://media.opencurriculum.org/articles_manual/michael_corral_trigonometry/area-of-a-sector/1.png)
+
 
 * Gaussian distribution for the radius
 * Uniform distribution for the angle
@@ -141,9 +156,18 @@ particle.position = (random_x, random_y)
 
 ---
 
-### Teleporter
+## Gaussian fire
 
-* Particles distributed over the circle radius and not randomly inside 
+### Updates
+
+* Position is updated up on the top/bottom axis
+* Color is updated from yellow (at their spawn) to red (at their death)
+
+---
+
+## Teleporter
+
+* Particles distributed over the circle radius and not randomly inside
 ```C++
 void teleport()
   if (inside_zone())
