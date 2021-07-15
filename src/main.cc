@@ -84,8 +84,12 @@ int main(int argc, char* argv[])
     // x -> front to back
     // y -> top to bottom
     // z -> left to right
-    // scene::Light main_light = scene::Light({0.0, 10.0, 0.0}, 5.f);
-    // scene::lights.add_light(main_light);
+    scene::Light main_light = scene::Light({0.0, 10.0, 0.0}, 5.f);
+    scene::lights.add_light(main_light);
+
+    scene::Light behind_light = scene::Light({-10.f, 5.f, 0.f}, 2.f);
+    scene::lights.add_light(behind_light);
+
     const glm::vec3 delta_light{0.f, 0.5f, 0.f};
     // Fire
     const glm::vec3 fire_origin{18.f, 0.75f, 4.f};
@@ -130,7 +134,7 @@ int main(int argc, char* argv[])
         false, // color attenuation
         20.f); // base life
 
-    const glm::vec3 portalB_origin{18.f, 0.f, 0.f};
+    const glm::vec3 portalB_origin{18.f, 0.75f, 0.f};
     particle::portal_generator_B = particle::portal_generator_A;
     scene::lights.add_light({portalB_origin + delta_light, 0.5f});
     particle::portal_generator_B.set_position(portalB_origin);
