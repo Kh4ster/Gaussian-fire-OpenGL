@@ -15,8 +15,8 @@
 * Camera motion
     * with keyboard
     * with mouse
+* Scenes produced on blender (by ourselves)
 * `.obj` parsing
-* Scene produces on blender (by ourselves)
 * Particles generator
     * Fire generator
     * Teleporter generator
