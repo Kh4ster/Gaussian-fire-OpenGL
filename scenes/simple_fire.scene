@@ -1,0 +1,17 @@
+
+const glm::vec3 delta_light{0.f, 0.5f, 0.f};
+// Fire
+const glm::vec3 fire_origin{0.f, 0.0f, 0.f};
+const scene::Light fire_light =
+    scene::Light(fire_origin + delta_light, 4.f);
+scene::lights.add_light(fire_light);
+particle::fire_generator = particle::ParticleGenerator(
+    glm::vec3(0.f, 1.f, 0.f),          // velocity
+    fire_origin,                       // origin
+    glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // color
+    0.1,                               // speed
+    1000,   // number of new particles for each update
+    10000,  // number of particles
+    0.02f); // scale
+
+scene::main_model = scene::Model::from_file("obj/plane.obj");

@@ -88,13 +88,9 @@ void init_textures()
 {
     tifo::rgb24_image* texture = tifo::load_image("data/wood-3.tga");
 
-    std::cout << "texture " << texture->sx << " ," << texture->sy << "\n";
-
     GLint texture_units, combined_texture_units;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &combined_texture_units);
-    std::cout << "Limit 1 " << texture_units << " limit 2 "
-              << combined_texture_units << std::endl;
 
     glGenTextures(1, &texture_id);
     TEST_OPENGL_ERROR();
@@ -114,7 +110,6 @@ void init_textures()
     TEST_OPENGL_ERROR();
     GLint tex_location = glGetUniformLocation(program_id, "texture_sampler");
     TEST_OPENGL_ERROR();
-    std::cout << "tex_location " << tex_location << std::endl;
     glUniform1i(tex_location, 0);
     TEST_OPENGL_ERROR();
 
