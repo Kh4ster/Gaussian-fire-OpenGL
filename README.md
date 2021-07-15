@@ -16,6 +16,7 @@
     * with keyboard
     * with mouse
 * `.obj` parsing
+* Scene produces on blender (by ourselves)
 * Particles generator
     * Fire generator
     * Teleporter generator
