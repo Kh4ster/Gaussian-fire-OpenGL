@@ -104,11 +104,41 @@ vec3 computed_color = dot(onormal, normalize(light_dir[i])) * texture(texture_sa
 
 ---
 
+## Generator
+
+```C++
+for (Particle& particle : particles_)
+    particle.life -= life_diminution;
+    if (particle.is_alive())
+        particle.position += particle.direction * particle.speed
+        particle.color -=  color_attenuation_
+
+// Find dead particles
+// Respawn the given number of particles
+for (Particle& particle : particles_)
+    if (particle.is_dead())
+        respawn(particle)
+        respawned_particle++
+        if (respawned_particle == nb_new_particles_)
+            break;
+```
+---
+
 ### Gaussian fire
 
 * Gaussian distribution for the radius
 * Uniform distribution for the angle
 * Uniform distribution to add noises to the particles
+```C++
+random_r = normal_distribution();
+random_teta = (rand() % 100) / 100.f * 2 * M_PI
+
+random_x = random_r * cos(random_teta)
+random_y = random_r * sin(random_teta)
+
+particle.position = (random_x, random_y)
+```
+
 ---
 
 ### Teleporter
@@ -116,22 +146,15 @@ vec3 computed_color = dot(onormal, normalize(light_dir[i])) * texture(texture_sa
 * Particles distributed over the circle radius and not randomly inside 
 ```C++
 void teleport()
-{
-    if (inside_zone())
-    {
-        if (entering_zone < threshold)
-        {
-            ++entering_zone;
-            portal_generator_A.activate();
-        }
-        else if (entering_zone == threshold)
-            camera.origin_ = portal_generator_B.get_position();
-    }
-}
+  if (inside_zone())
+    if (entering_zone < threshold)
+      ++entering_zone
+      portal_generator_A.activate()
+    else if (entering_zone == threshold)
+      camera.origin_ = portal_generator_B.get_position()
+      ++entering_zone
 
 void activate()
-{
-    speed_ += 0.005f;
-    color_ += 0.005f;
-}
+  speed_ += 0.005f;
+  color_ += 0.005f;
 ```
